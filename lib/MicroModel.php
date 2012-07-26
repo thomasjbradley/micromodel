@@ -10,24 +10,32 @@
 
 abstract class MicroModel implements \ArrayAccess, \Iterator {
 	/**
+	 * Instance of Silex\Application
+	 * @var Silex\Application
+	 */
+	protected $__app;
+
+	/**
 	 * Instance of the Doctrine DBAL Connection
 	 * @var Doctrine\DBAL\Connection
 	 */
-	protected $db;
+	protected $__db;
 
 	/**
 	 * Holds all the tables fields, values, and form constraints
 	 * @var array
 	 */
-	protected $params = array();
+	protected $__params = array();
 
 	/**
 	 * Sets up DB connection; registers table params; optionally reads single row
-	 * @param Doctrine\DBAL\Connection $db The database connection
+	 * @param Silex\Application $app The Silex application with Doctrine DBAL
 	 * @param mixed $pkValue The value for the primary key item to read an individual row
 	 */
-	public function __construct (\Doctrine\DBAL\Connection $db, $pkValue = null) {
-		$this->db = $db;
+	public function __construct (\Silex\Application $app, $pkValue = null) {
+		$this->__app = $app;
+		$this->__db = $this->__app['db'];
+
 		$this->registerParams();
 
 		if (!is_null($pkValue)) {
@@ -41,7 +49,7 @@ abstract class MicroModel implements \ArrayAccess, \Iterator {
 	 * @return mixed
 	 */
 	public function __get ($param) {
-		return $this->params[$param]['value'];
+		return $this->__params[$param]['value'];
 	}
 
 	/**
@@ -50,10 +58,10 @@ abstract class MicroModel implements \ArrayAccess, \Iterator {
 	 * @param mixed $val The new value for the param
 	 */
 	public function __set ($param, $val) {
-		if (isset($this->params[$param]['set'])) {
-			$this->params[$param]['value'] = $this->params[$param]['set']($val);
+		if (isset($this->__params[$param]['set'])) {
+			$this->__params[$param]['value'] = $this->__params[$param]['set']($val);
 		} else {
-			$this->params[$param]['value'] = $val;
+			$this->__params[$param]['value'] = $val;
 		}
 	}
 
@@ -73,7 +81,7 @@ abstract class MicroModel implements \ArrayAccess, \Iterator {
 	 * @return bool
 	 */
 	public function offsetExists ($offset) {
-		return isset($this->params[$offset]);
+		return isset($this->__params[$offset]);
 	}
 
 	/**
@@ -82,7 +90,7 @@ abstract class MicroModel implements \ArrayAccess, \Iterator {
 	 * @return void
 	 */
 	public function offsetUnset ($offset) {
-		$this->params[$offset]['value'] = null;
+		$this->__params[$offset]['value'] = null;
 	}
 
 	/**
@@ -91,47 +99,47 @@ abstract class MicroModel implements \ArrayAccess, \Iterator {
 	 * @return mixed
 	 */
 	public function offsetGet ($offset) {
-		return $this->params[$offset]['value'];
+		return $this->__params[$offset]['value'];
 	}
 
 	/**
 	 * Iterator implementation of rewind
 	 * @return void
 	 */
-	function rewind () {
-		prev($this->params);
+	public function rewind () {
+		prev($this->__params);
 	}
 
 	/**
 	 * Iterator implementation of current
 	 * @return array All the param's details
 	 */
-	function current () {
-		return current($this->params);
+	public function current () {
+		return current($this->__params);
 	}
 
 	/**
 	 * Iterator implementation of key
 	 * @return string The param's name
 	 */
-	function key () {
-		return key($this->params);
+	public function key () {
+		return key($this->__params);
 	}
 
 	/**
 	 * Iterator implementation of next
 	 * @return void
 	 */
-	function next () {
-		next($this->params);
+	public function next () {
+		next($this->__params);
 	}
 
 	/**
 	 * Iterator implementation of valid
 	 * @return bool
 	 */
-	function valid () {
-		return isset($this->params[key($this->params)]);
+	public function valid () {
+		return isset($this->__params[key($this->__params)]);
 	}
 
 	/**
@@ -148,7 +156,7 @@ abstract class MicroModel implements \ArrayAccess, \Iterator {
 		if (!isset($options['value']))
 			$options['value'] = null;
 
-		$this->params[$param] = $options;
+		$this->__params[$param] = $options;
 	}
 
 	/**
@@ -173,13 +181,13 @@ abstract class MicroModel implements \ArrayAccess, \Iterator {
 			$sql .= sprintf(' ORDER BY %s', implode(',', $order));
 		}
 
-		$results = $this->db->fetchAll($sql);
+		$results = $this->__db->fetchAll($sql);
 		$items = array();
 
 		// Hack because PDO::FETCH_CLASS doesn't work reliably
 		foreach ($results as $item) {
 			$class = get_class($this);
-			$obj = new $class($this->db);
+			$obj = new $class($this->__app);
 
 			foreach ($item as $k => $v) {
 				$obj->$k = $v;
@@ -196,8 +204,8 @@ abstract class MicroModel implements \ArrayAccess, \Iterator {
 	 * @return $this
 	 */
 	public function create () {
-		reset($this->params);
-		$pk = key($this->params);
+		reset($this->__params);
+		$pk = key($this->__params);
 		$values = $this->getValues(false);
 		$placeholders = array();
 
@@ -212,10 +220,10 @@ abstract class MicroModel implements \ArrayAccess, \Iterator {
 			, implode(',', $placeholders)
 		);
 
-		$stmt = $this->db->prepare($sql);
+		$stmt = $this->__db->prepare($sql);
 
 		foreach ($values as $k => $v) {
-			$stmt->bindValue($k, $v, $this->params[$k]['type']);
+			$stmt->bindValue($k, $v, $this->__params[$k]['type']);
 		}
 
 		$stmt->execute();
@@ -229,8 +237,8 @@ abstract class MicroModel implements \ArrayAccess, \Iterator {
 	 * @return $this
 	 */
 	public function read ($pkValue) {
-		reset($this->params);
-		$pk = key($this->params);
+		reset($this->__params);
+		$pk = key($this->__params);
 
 		$sql = sprintf(
 			'SELECT * FROM %s WHERE %s = :%s'
@@ -239,13 +247,13 @@ abstract class MicroModel implements \ArrayAccess, \Iterator {
 			, $pk
 		);
 
-		$stmt = $this->db->prepare($sql);
+		$stmt = $this->__db->prepare($sql);
 		$stmt->bindValue($pk, $pkValue);
 		$stmt->execute();
 
 		$results = $stmt->fetch();
 
-		foreach ($this->params as $k => $v) {
+		foreach ($this->__params as $k => $v) {
 			$this->$k = $results[$k];
 		}
 
@@ -257,8 +265,8 @@ abstract class MicroModel implements \ArrayAccess, \Iterator {
 	 * @return $this
 	 */
 	public function update () {
-		reset($this->params);
-		$pk = key($this->params);
+		reset($this->__params);
+		$pk = key($this->__params);
 		$values = $this->getValues(false);
 		$updates = array();
 
@@ -274,9 +282,9 @@ abstract class MicroModel implements \ArrayAccess, \Iterator {
 			, $pk
 		);
 
-		$stmt = $this->db->prepare($sql);
+		$stmt = $this->__db->prepare($sql);
 
-		foreach ($this->params as $k => $v) {
+		foreach ($this->__params as $k => $v) {
 			$stmt->bindValue($k, $this->__get($k), $v['type']);
 		}
 
@@ -290,10 +298,10 @@ abstract class MicroModel implements \ArrayAccess, \Iterator {
 	 * @return $this
 	 */
 	public function delete () {
-		reset($this->params);
-		$pk = key($this->params);
+		reset($this->__params);
+		$pk = key($this->__params);
 
-		$this->db->delete(
+		$this->__db->delete(
 			strtolower(get_class($this))
 			, array($pk => $this->__get($pk))
 		);
@@ -306,10 +314,10 @@ abstract class MicroModel implements \ArrayAccess, \Iterator {
 	 * @param Silex\Application $app The Silex app instance to get the form builder
 	 * @return Silex\Form
 	 */
-	public function getForm (\Silex\Application $app) {
-		$builder = $app['form.factory']->createBuilder('form', $this);
+	public function getForm () {
+		$builder = $this->__app['form.factory']->createBuilder('form', $this);
 
-		foreach (array_slice($this->params, 1, null, true) as $k => $v) {
+		foreach (array_slice($this->__params, 1, null, true) as $k => $v) {
 			if (isset($v['display']) && $v['display'] == false)
 				continue;
 
@@ -334,9 +342,9 @@ abstract class MicroModel implements \ArrayAccess, \Iterator {
 	 */
 	public function getValues ($withPk = true) {
 		if (!$withPk) {
-			$values = array_slice($this->params, 1, null, true);
+			$values = array_slice($this->__params, 1, null, true);
 		} else {
-			$values = $this->params;
+			$values = $this->__params;
 		}
 
 		foreach ($values as $k => $v) {
