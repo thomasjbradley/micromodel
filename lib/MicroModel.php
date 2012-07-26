@@ -336,6 +336,31 @@ abstract class MicroModel implements \ArrayAccess, \Iterator {
 	}
 
 	/**
+	 * Confirms that the current model object is valid or not
+	 * @return boolean|array True if valid; Error list if invalid
+	 */
+	public function isValid () {
+		$errors = array();
+		$validator = $this->__app['validator'];
+
+		foreach ($this->getValues(true) as $k => $v) {
+			if (!isset($this->__params[$k]['constraints']))
+				continue;
+
+			foreach ($this->__params[$k]['constraints'] as $constraint) {
+				$possibleError = $validator->validateValue($v, $constraint);
+
+				if (count($possibleError) != 0) {
+					$errors[$k] = array();
+					$errors[$k][get_class($constraint)] = $possibleError;
+				}
+			}
+		}
+
+		return (empty($errors)) ? true : $errors;
+	}
+
+	/**
 	 * Gets all the values for this item and puts them in an array
 	 * @param boolean $withPk Whether the primary key item should be included or not
 	 * @return array
