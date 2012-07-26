@@ -1,0 +1,348 @@
+<?php
+/**
+ * MicroModel: a really basic ORM for working with Silex and Doctrine DBAL
+ * Supports single instance tables with no relationships
+ * @author Thomas J Bradley <hey@thomasjbradley.ca>
+ * @link http://github.com/thomasjbradley/micromodel
+ * @copyright 2012 Thomas J Bradley
+ * @license BSD-3-Clause
+ */
+
+abstract class MicroModel implements \ArrayAccess, \Iterator {
+	/**
+	 * Instance of the Doctrine DBAL Connection
+	 * @var Doctrine\DBAL\Connection
+	 */
+	protected $db;
+
+	/**
+	 * Holds all the tables fields, values, and form constraints
+	 * @var array
+	 */
+	protected $params = array();
+
+	/**
+	 * Sets up DB connection; registers table params; optionally reads single row
+	 * @param Doctrine\DBAL\Connection $db The database connection
+	 * @param mixed $pkValue The value for the primary key item to read an individual row
+	 */
+	public function __construct (\Doctrine\DBAL\Connection $db, $pkValue = null) {
+		$this->db = $db;
+		$this->registerParams();
+
+		if (!is_null($pkValue)) {
+			$this->read($pkValue);
+		}
+	}
+
+	/**
+	 * Generic getter for all the field params
+	 * @param string $param The param's name
+	 * @return mixed
+	 */
+	public function __get ($param) {
+		return $this->params[$param]['value'];
+	}
+
+	/**
+	 * Generic setter for all the field params
+	 * @param string $param The param's name
+	 * @param mixed $val The new value for the param
+	 */
+	public function __set ($param, $val) {
+		if (isset($this->params[$param]['set'])) {
+			$this->params[$param]['value'] = $this->params[$param]['set']($val);
+		} else {
+			$this->params[$param]['value'] = $val;
+		}
+	}
+
+	/**
+	 * ArrayAccess implementation for offsetSet: changes the param's value
+	 * @param string $offset The param's name
+	 * @param array $value A replacement value for the param
+	 * @return void
+	 */
+	public function offsetSet ($offset, $value) {
+		$this->__set($offset, $value);
+	}
+
+	/**
+	 * ArrayAccess implementation for offsetExists
+	 * @param string $offset The param's name
+	 * @return bool
+	 */
+	public function offsetExists ($offset) {
+		return isset($this->params[$offset]);
+	}
+
+	/**
+	 * ArrayAccess implementation for offsetUnset: empties the param's value
+	 * @param string $offset The param's name
+	 * @return void
+	 */
+	public function offsetUnset ($offset) {
+		$this->params[$offset]['value'] = null;
+	}
+
+	/**
+	 * ArrayAccess implementation for offsetGet: returns the param's value
+	 * @param string $offset The param's name
+	 * @return mixed
+	 */
+	public function offsetGet ($offset) {
+		return $this->params[$offset]['value'];
+	}
+
+	/**
+	 * Iterator implementation of rewind
+	 * @return void
+	 */
+	function rewind () {
+		prev($this->params);
+	}
+
+	/**
+	 * Iterator implementation of current
+	 * @return array All the param's details
+	 */
+	function current () {
+		return current($this->params);
+	}
+
+	/**
+	 * Iterator implementation of key
+	 * @return string The param's name
+	 */
+	function key () {
+		return key($this->params);
+	}
+
+	/**
+	 * Iterator implementation of next
+	 * @return void
+	 */
+	function next () {
+		next($this->params);
+	}
+
+	/**
+	 * Iterator implementation of valid
+	 * @return bool
+	 */
+	function valid () {
+		return isset($this->params[key($this->params)]);
+	}
+
+	/**
+	 * Registers a table's field as a param
+	 * @param string $param The param's name
+	 * @param string $type The param's type, matches Symfony\Form types
+	 * @param array $options The param's options, matches Symfony\Form options
+	 * @return void
+	 */
+	public function register ($param, $type = 'text', $options = array()) {
+		if (!isset($options['type']))
+			$options['type'] = $type;
+
+		if (!isset($options['value']))
+			$options['value'] = null;
+
+		$this->params[$param] = $options;
+	}
+
+	/**
+	 * Abstract function that must be implemented by the model
+	 * Used to register all the table field types
+	 * @return void
+	 */
+	abstract public function registerParams ();
+
+	/**
+	 * Returns all the items from the table for this type
+	 * @param array $order The SQL ORDER BY clause, e.g. name ASC
+	 * @return array Each item mapped to the model class
+	 */
+	public function all ($order = array()) {
+		$sql = sprintf('SELECT * FROM %s', strtolower(get_class($this)));
+
+		if (!empty($order)) {
+			if (is_string($order))
+				$order = array($order);
+
+			$sql .= sprintf(' ORDER BY %s', implode(',', $order));
+		}
+
+		$results = $this->db->fetchAll($sql);
+		$items = array();
+
+		// Hack because PDO::FETCH_CLASS doesn't work reliably
+		foreach ($results as $item) {
+			$class = get_class($this);
+			$obj = new $class($this->db);
+
+			foreach ($item as $k => $v) {
+				$obj->$k = $v;
+			}
+
+			$items[] = $obj;
+		}
+
+		return $items;
+	}
+
+	/**
+	 * Creates a new entry in the table
+	 * @return $this
+	 */
+	public function create () {
+		reset($this->params);
+		$pk = key($this->params);
+		$values = $this->getValues(false);
+		$placeholders = array();
+
+		foreach ($values as $k => $v) {
+			$placeholders[] = ':' . $k;
+		}
+
+		$sql = sprintf(
+			'INSERT INTO %s (%s) VALUES (%s)'
+			, strtolower(get_class($this))
+			, implode(',', array_keys($values))
+			, implode(',', $placeholders)
+		);
+
+		$stmt = $this->db->prepare($sql);
+
+		foreach ($values as $k => $v) {
+			$stmt->bindValue($k, $v, $this->params[$k]['type']);
+		}
+
+		$stmt->execute();
+
+		return $this;
+	}
+
+	/**
+	 * Gets a single item from the table
+	 * @param mixed $pkValue The value for the primary key of this table
+	 * @return $this
+	 */
+	public function read ($pkValue) {
+		reset($this->params);
+		$pk = key($this->params);
+
+		$sql = sprintf(
+			'SELECT * FROM %s WHERE %s = :%s'
+			, strtolower(get_class($this))
+			, $pk
+			, $pk
+		);
+
+		$stmt = $this->db->prepare($sql);
+		$stmt->bindValue($pk, $pkValue);
+		$stmt->execute();
+
+		$results = $stmt->fetch();
+
+		foreach ($this->params as $k => $v) {
+			$this->$k = $results[$k];
+		}
+
+		return $this;
+	}
+
+	/**
+	 * Updates this entry in the table
+	 * @return $this
+	 */
+	public function update () {
+		reset($this->params);
+		$pk = key($this->params);
+		$values = $this->getValues(false);
+		$updates = array();
+
+		foreach ($values as $k => $v) {
+			$updates[] = sprintf('%s = :%s', $k, $k);
+		}
+
+		$sql = sprintf(
+			'UPDATE %s SET %s WHERE %s = :%s'
+			, strtolower(get_class($this))
+			, implode(',', $updates)
+			, $pk
+			, $pk
+		);
+
+		$stmt = $this->db->prepare($sql);
+
+		foreach ($this->params as $k => $v) {
+			$stmt->bindValue($k, $this->__get($k), $v['type']);
+		}
+
+		$stmt->execute();
+
+		return $this;
+	}
+
+	/**
+	 * Deletes this entry in the table
+	 * @return $this
+	 */
+	public function delete () {
+		reset($this->params);
+		$pk = key($this->params);
+
+		$this->db->delete(
+			strtolower(get_class($this))
+			, array($pk => $this->__get($pk))
+		);
+
+		return $this;
+	}
+
+	/**
+	 * Gets a Symfony\Form object based on registered params
+	 * @param Silex\Application $app The Silex app instance to get the form builder
+	 * @return Silex\Form
+	 */
+	public function getForm (\Silex\Application $app) {
+		$builder = $app['form.factory']->createBuilder('form', $this);
+
+		foreach (array_slice($this->params, 1, null, true) as $k => $v) {
+			if (isset($v['display']) && $v['display'] == false)
+				continue;
+
+			$options = $v;
+			unset($options['type']);
+			unset($options['value']);
+			unset($options['set']);
+			unset($options['display']);
+
+			$builder->add($k, $v['type'], $options);
+		}
+
+		$form = $builder->getForm();
+
+		return $form;
+	}
+
+	/**
+	 * Gets all the values for this item and puts them in an array
+	 * @param boolean $withPk Whether the primary key item should be included or not
+	 * @return array
+	 */
+	public function getValues ($withPk = true) {
+		if (!$withPk) {
+			$values = array_slice($this->params, 1, null, true);
+		} else {
+			$values = $this->params;
+		}
+
+		foreach ($values as $k => $v) {
+			$values[$k] = $this->__get($k);
+		}
+
+		return $values;
+	}
+}
