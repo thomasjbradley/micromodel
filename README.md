@@ -49,7 +49,6 @@ Then make a new instance of your model, passing the Silex\Application.
 
 ```php
 <?php
-
 $planets = new Planets($app);
 $planetsList = $planets->all();
 ```
@@ -110,60 +109,84 @@ MicroModel adds a few extra options to the array.
 
 	`$pkValue` (mixed) — the value for the individual item’s primary key.
 
-		$planets = new Planets($app, 1);
-		echo $planets->name; // Mercury
+	```php
+	<?php
+	$planets = new Planets($app, 1);
+	echo $planets->name; // Mercury
+	```
 
 - `all($order)` — get all the results from the table, optionally sorting them.
 
 	`$order` (string|array) — the field names & direction for the order clause.
 
-		$planets = new Planets($app);
-		$planets->all();
-		$planets->all('name ASC');
-		$planets->all(array('name ASC', 'discovery_date DESC'));
+	```php
+	<?php
+	$planets = new Planets($app);
+	$planets->all();
+	$planets->all('name ASC');
+	$planets->all(array('name ASC', 'discovery_date DESC'));
+	```
 
 - `create()` — save the current object into the database, aka `INSERT`.
 
-		$planets = new Planets($app);
-		$planets->name = 'Jupiter';
-		$planets->orbital_period = 4332.59;
-		$planets->last_updated = new DateTime();
-		$planets->create();
+	```php
+	<?php
+	$planets = new Planets($app);
+	$planets->name = 'Jupiter';
+	$planets->orbital_period = 4332.59;
+	$planets->last_updated = new DateTime();
+	$planets->create();
+	```
 
 - `read($pkValue)` — read a single entry from the table.
 
 	$pkValue (mixed) — the value for the individual item’s primary key.
 
-		$planets = new Planets($app);
-		$pluto = $planets->read(1);
-		echo $pluto->name; // Mercury
+	```php
+	<?php
+	$planets = new Planets($app);
+	$pluto = $planets->read(1);
+	echo $pluto->name; // Mercury
+	```
 
 - `update()` — update the current object in the table, aka `UPDATE`.
 
-		$planets = new Planets($app, 2);
-		$planets->last_updated = new DateTime();
-		$planets->update();
+	```php
+	<?php
+	$planets = new Planets($app, 2);
+	$planets->last_updated = new DateTime();
+	$planets->update();
+	```
 
 - `delete()` — delete the current object from the table, aka `DELETE`.
 
-		$planets = new Planets($app, 3);
-		$planets->delete();
+	```php
+	<?php
+	$planets = new Planets($app, 3);
+	$planets->delete();
+	```
 
 - `getForm()` — return a Symfony\Form object for the object.
 
-		$planets = new Planets($app, 1);
-		$form = $planets->getForm();
-		// $form->bindRequest($request);
-		// $form->isValid();
-		// $form->createForm();
+	```php
+	<?php
+	$planets = new Planets($app, 1);
+	$form = $planets->getForm();
+	// $form->bindRequest($request);
+	// $form->isValid();
+	// $form->createForm();
+	```
 
 - `isValid()` — validates the information in the object against the field constraints.
 
-		$planets = new Planets($app);
-		$planets->name = 'Saturn';
-		$planets->orbital_period = 10759.22;
-		$planets->last_updated = new DateTime();
-		$planets->isValid(); // true
+	```php
+	<?php
+	$planets = new Planets($app);
+	$planets->name = 'Saturn';
+	$planets->orbital_period = 10759.22;
+	$planets->last_updated = new DateTime();
+	$planets->isValid(); // true
+	```
 
 	The method will return `true` if the form is valid, and a collection of Symfony\Form error messages if invalid.
 
