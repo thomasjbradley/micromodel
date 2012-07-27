@@ -37,8 +37,6 @@ Here’s a table we’ll use for the rest of the code samples.
 	```php
 	<?php
 
-	use Symfony\Component\Validator\Constraints as Assert;
-
 	class Planets extends MicroModel
 	{
 		public function registerFields ()
