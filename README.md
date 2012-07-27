@@ -47,8 +47,10 @@ class Planets extends MicroModel
 
 Then make a new instance of your model, passing the Silex\Application.
 
-	$planets = new Planets($app);
-	$planetsList = $planets->all();
+```php
+$planets = new Planets($app);
+$planetsList = $planets->all();
+```
 
 ## Field registration
 
