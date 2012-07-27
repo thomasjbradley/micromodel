@@ -32,6 +32,8 @@ Create a PHP class in your Silex application that extends MicroModel.
 Capitalization doesn’t matter, the class name/table name will be converted to lowercase.
 
 ```php
+<?php
+
 use Symfony\Component\Validator\Constraints as Assert;
 
 class Planets extends MicroModel
