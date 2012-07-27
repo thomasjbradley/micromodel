@@ -22,7 +22,7 @@ abstract class MicroModel implements \ArrayAccess, \Iterator {
 	protected $__db;
 
 	/**
-	 * Holds all the tables fields, values, and form constraints
+	 * Holds all the table's fields, values, and form constraints
 	 * @var array
 	 */
 	protected $__params = array();
@@ -38,9 +38,8 @@ abstract class MicroModel implements \ArrayAccess, \Iterator {
 
 		$this->registerFields();
 
-		if (!is_null($pkValue)) {
+		if (!is_null($pkValue))
 			$this->read($pkValue);
-		}
 	}
 
 	/**
@@ -311,7 +310,6 @@ abstract class MicroModel implements \ArrayAccess, \Iterator {
 
 	/**
 	 * Gets a Symfony\Form object based on registered params
-	 * @param Silex\Application $app The Silex app instance to get the form builder
 	 * @return Silex\Form
 	 */
 	public function getForm () {
