@@ -141,7 +141,7 @@ MicroModel adds a few extra options to the array.
 
 - `read((mixed) $pkValue)` — read a single entry from the table.
 
-	$pkValue — the value for the individual item’s primary key.
+	`$pkValue` — the value for the individual item’s primary key.
 
 	```php
 	<?php
@@ -193,4 +193,4 @@ MicroModel adds a few extra options to the array.
 
 ## License
 
-MicroModel is licensed under the [New BSD license](https://github.com/thomasjbradley/micromodel/blob/master/NEW-BSD-LICENSE.txt).
+MicroModel is licensed under the [BSD 3-Clause license](https://github.com/thomasjbradley/micromodel/blob/master/BSD-3-CLAUSE-LICENSE.txt).
