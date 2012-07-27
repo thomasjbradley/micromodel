@@ -149,7 +149,11 @@ Get all the results from the table, optionally sorting them.
 $planets = new Planets($app);
 $planets->all();
 $planets->all('name ASC');
-$planets->all(array('name ASC', 'orbital_period DESC'));
+$planetsList = $planets->all(array('name ASC', 'orbital_period DESC'));
+
+foreach ($planetsList as $planet) {
+	echo $planet->name;
+}
 ```
 
 ### ☛ create()
@@ -166,6 +170,7 @@ $planets->name = 'Jupiter';
 $planets->orbital_period = 4332.59;
 $planets->last_updated = new DateTime();
 $planets->create();
+echo $planets->id; // 4
 ```
 
 ### ☛ read( mixed *$pkValue* )
@@ -212,7 +217,7 @@ $planets->delete();
 
 ### ☛ getForm()
 
-Return a Symfony\Form object for the model.
+Returns a [Symfony\Form](http://symfony.com/doc/current/book/forms.html) object for the model.
 All constraints and options from the field registeration are used.
 
 **@return** — Symfony\Form
