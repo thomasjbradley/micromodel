@@ -36,7 +36,7 @@ abstract class MicroModel implements \ArrayAccess, \Iterator {
 		$this->__app = $app;
 		$this->__db = $this->__app['db'];
 
-		$this->registerParams();
+		$this->registerFields();
 
 		if (!is_null($pkValue)) {
 			$this->read($pkValue);
@@ -164,7 +164,7 @@ abstract class MicroModel implements \ArrayAccess, \Iterator {
 	 * Used to register all the table field types
 	 * @return void
 	 */
-	abstract public function registerParams ();
+	abstract public function registerFields ();
 
 	/**
 	 * Returns all the items from the table for this type
