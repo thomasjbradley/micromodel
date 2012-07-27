@@ -104,9 +104,9 @@ MicroModel adds a few extra options to the array.
 
 ## Methods
 
-### __construct($app[, (mixed) $pkValue = null])
+### __construct( *$app* [, mixed *$pkValue* = *null* ] )
 
-`__construct($app[, (mixed) $pkValue = null])` — the constructor has one dependency: the Silex\Application object.
+The constructor has one dependency: the Silex\Application object.
 You can optionally read a single item immediately by specifying `$pkValue`.
 
 `$pkValue` — the value for the individual item’s primary key.
@@ -117,9 +117,9 @@ $planets = new Planets($app, 1);
 echo $planets->name; // Mercury
 ```
 
-### all()
+### all( [ (string|array) $order = null ] )
 
-`all([(string|array) $order = null])` — get all the results from the table, optionally sorting them.
+Get all the results from the table, optionally sorting them.
 
 `$order` — the field names & direction for the order clause.
 
