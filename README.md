@@ -109,7 +109,7 @@ MicroModel adds a few extra options to the array.
 
 ## Methods
 
-### ➤ __construct( Silex\Application *$app* [, mixed *$pkValue* = *null* ] )
+### ⇢ __construct( Silex\Application *$app* [, mixed *$pkValue* = *null* ] )
 
 Set up the model and optionally read a single item immediately by specifying `$pkValue`.
 
@@ -122,7 +122,7 @@ $planets = new Planets($app, 1);
 echo $planets->name; // Mercury
 ```
 
-### all( [ string|array *$order* = *null* ] )
+### ⚑ all( [ string|array *$order* = *null* ] )
 
 Get all the results from the table, optionally sorting them.
 *Will return an array of the model objects.*
@@ -139,7 +139,7 @@ $planets->all('name ASC');
 $planets->all(array('name ASC', 'orbital_period DESC'));
 ```
 
-### create()
+### ☛ create()
 
 Save the current object, using the property values, into the database, aka `INSERT`.
 After insertion, the primary key field is populated with `lastInsertId`.
