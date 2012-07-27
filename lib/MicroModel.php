@@ -156,6 +156,8 @@ abstract class MicroModel implements \ArrayAccess, \Iterator {
 			$options['value'] = null;
 
 		$this->__params[$param] = $options;
+
+		return $this;
 	}
 
 	/**
