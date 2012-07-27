@@ -105,7 +105,7 @@ MicroModel adds a few extra options to the array.
 
 - `set` (function) — An optional setter function.
 	Allows for data type conversion and sanitization.
-- `display` (boolean) — Whether the field should be shown in forms or not.
+- `display` (boolean) — Optional; whether the field should be shown in forms or not.
 
 ## Methods
 
@@ -128,7 +128,8 @@ Get all the results from the table, optionally sorting them.
 *Will return an array of the model objects.*
 
 - `$order` — the field names & direction for the order clause.
-- **@return** — an array of objects, each object is an instance of your model.
+
+**@return** — an array of objects, each object is an instance of your model.
 
 ```php
 <?php
@@ -143,7 +144,7 @@ $planets->all(array('name ASC', 'orbital_period DESC'));
 Save the current object, using the property values, into the database, aka `INSERT`.
 After insertion, the primary key field is populated with `lastInsertId`.
 
-- **@return** — `$this`
+**@return** — `$this`
 
 ```php
 <?php
@@ -159,7 +160,8 @@ $planets->create();
 Read a single entry from the table, converting all the fields to properties of the object.
 
 - `$pkValue` — the value for the individual item’s primary key.
-- **@return** — `$this`
+
+**@return** — `$this`
 
 ```php
 <?php
@@ -173,7 +175,7 @@ echo $pluto->name; // Mercury
 Update the current object, using the property values, in the table, aka `UPDATE`.
 Uses the field marked as primary key for the `WHERE` clause.
 
-- **@return** — `$this`
+**@return** — `$this`
 
 ```php
 <?php
@@ -187,7 +189,7 @@ $planets->update();
 Delete the current object from the table, aka `DELETE`.
 Uses the field marked as primary key for the `WHERE` clause.
 
-- **@return** — `$this`
+**@return** — `$this`
 
 ```php
 <?php
@@ -198,8 +200,9 @@ $planets->delete();
 ### getForm()
 
 Return a Symfony\Form object for the model.
+All constraints and options from the field registeration are used.
 
-- **@return** — Symfony\Form
+**@return** — Symfony\Form
 
 ```php
 <?php
@@ -214,7 +217,7 @@ $form = $planets->getForm();
 
 Validates the information in the object against the field constraints.
 
-- **@return** — `true` if the form is valid, and a collection of Symfony\Form error messages if invalid.
+**@return** — `true` if the form is valid; a collection of Symfony\Form error messages if invalid.
 
 ```php
 <?php
