@@ -122,6 +122,16 @@ $planets = new Planets($app, 1);
 echo $planets->name; // Mercury
 ```
 
+### ☛ register( *$name* [, string *$type* = 'text' [, array *$options* = *array()* ]] )
+
+Register a new field on the model to match a field in the table.
+
+- `$name` — The name of the field, spelled identically to the table’s field name.
+- `$type` — One of the [Symfony\Form](http://symfony.com/doc/current/book/forms.html) field types. They match very well to the Doctrine\DBAL field types.
+- `$options` - Any of the Symfony\Form field options. Refer to [field registration extra options](#field-registration-extra-options) for more options.
+
+**@return** — `$this`
+
 ### ☛ all( [ string|array *$order* = *null* ] )
 
 Get all the results from the table, optionally sorting them.
