@@ -228,6 +228,7 @@ abstract class MicroModel implements \ArrayAccess, \Iterator {
 		}
 
 		$stmt->execute();
+		$this->$pk = $this->__db->lastInsertId();
 
 		return $this;
 	}
