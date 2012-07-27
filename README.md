@@ -129,7 +129,7 @@ echo $planets->name; // Mercury
 $planets = new Planets($app);
 $planets->all();
 $planets->all('name ASC');
-$planets->all(array('name ASC', 'discovery_date DESC'));
+$planets->all(array('name ASC', 'orbital_period DESC'));
 ```
 
 ### create()
