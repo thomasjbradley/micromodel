@@ -25,10 +25,10 @@ abstract class MicroModel implements \ArrayAccess, \Iterator {
 	 * Holds all the table's fields, values, and form constraints
 	 * @var array
 	 */
-	protected $__params = array();
+	protected $__fields = array();
 
 	/**
-	 * Sets up DB connection; registers table params; optionally reads single row
+	 * Sets up DB connection; registers table fields; optionally reads single row
 	 * @param Silex\Application $app The Silex application with Doctrine DBAL
 	 * @param mixed $pkValue The value for the primary key item to read an individual row
 	 */
@@ -43,31 +43,31 @@ abstract class MicroModel implements \ArrayAccess, \Iterator {
 	}
 
 	/**
-	 * Generic getter for all the field params
-	 * @param string $param The param's name
+	 * Generic getter for all the fields
+	 * @param string $field The field's name
 	 * @return mixed
 	 */
-	public function __get ($param) {
-		return $this->__params[$param]['value'];
+	public function __get ($field) {
+		return $this->__fields[$field]['value'];
 	}
 
 	/**
-	 * Generic setter for all the field params
-	 * @param string $param The param's name
-	 * @param mixed $val The new value for the param
+	 * Generic setter for all the field
+	 * @param string $field The field's name
+	 * @param mixed $val The new value for the field
 	 */
-	public function __set ($param, $val) {
-		if (isset($this->__params[$param]['set'])) {
-			$this->__params[$param]['value'] = $this->__params[$param]['set']($val);
+	public function __set ($field, $val) {
+		if (isset($this->__fields[$field]['set'])) {
+			$this->__fields[$field]['value'] = $this->__fields[$field]['set']($val);
 		} else {
-			$this->__params[$param]['value'] = $val;
+			$this->__fields[$field]['value'] = $val;
 		}
 	}
 
 	/**
-	 * ArrayAccess implementation for offsetSet: changes the param's value
-	 * @param string $offset The param's name
-	 * @param array $value A replacement value for the param
+	 * ArrayAccess implementation for offsetSet: changes the field's value
+	 * @param string $offset The field's name
+	 * @param array $value A replacement value for the field
 	 * @return void
 	 */
 	public function offsetSet ($offset, $value) {
@@ -76,29 +76,29 @@ abstract class MicroModel implements \ArrayAccess, \Iterator {
 
 	/**
 	 * ArrayAccess implementation for offsetExists
-	 * @param string $offset The param's name
+	 * @param string $offset The field's name
 	 * @return bool
 	 */
 	public function offsetExists ($offset) {
-		return isset($this->__params[$offset]);
+		return isset($this->__fields[$offset]);
 	}
 
 	/**
-	 * ArrayAccess implementation for offsetUnset: empties the param's value
-	 * @param string $offset The param's name
+	 * ArrayAccess implementation for offsetUnset: empties the field's value
+	 * @param string $offset The field's name
 	 * @return void
 	 */
 	public function offsetUnset ($offset) {
-		$this->__params[$offset]['value'] = null;
+		$this->__fields[$offset]['value'] = null;
 	}
 
 	/**
-	 * ArrayAccess implementation for offsetGet: returns the param's value
-	 * @param string $offset The param's name
+	 * ArrayAccess implementation for offsetGet: returns the field's value
+	 * @param string $offset The field's name
 	 * @return mixed
 	 */
 	public function offsetGet ($offset) {
-		return $this->__params[$offset]['value'];
+		return $this->__fields[$offset]['value'];
 	}
 
 	/**
@@ -106,23 +106,23 @@ abstract class MicroModel implements \ArrayAccess, \Iterator {
 	 * @return void
 	 */
 	public function rewind () {
-		prev($this->__params);
+		prev($this->__fields);
 	}
 
 	/**
 	 * Iterator implementation of current
-	 * @return array All the param's details
+	 * @return array All the field's details
 	 */
 	public function current () {
-		return current($this->__params);
+		return current($this->__fields);
 	}
 
 	/**
 	 * Iterator implementation of key
-	 * @return string The param's name
+	 * @return string The field's name
 	 */
 	public function key () {
-		return key($this->__params);
+		return key($this->__fields);
 	}
 
 	/**
@@ -130,7 +130,7 @@ abstract class MicroModel implements \ArrayAccess, \Iterator {
 	 * @return void
 	 */
 	public function next () {
-		next($this->__params);
+		next($this->__fields);
 	}
 
 	/**
@@ -138,24 +138,24 @@ abstract class MicroModel implements \ArrayAccess, \Iterator {
 	 * @return bool
 	 */
 	public function valid () {
-		return isset($this->__params[key($this->__params)]);
+		return isset($this->__fields[key($this->__fields)]);
 	}
 
 	/**
-	 * Registers a table's field as a param
-	 * @param string $param The param's name
-	 * @param string $type The param's type, matches Symfony\Form types
-	 * @param array $options The param's options, matches Symfony\Form options
+	 * Registers a table's field as a field
+	 * @param string $field The field's name
+	 * @param string $type The field's type, matches Symfony\Form types
+	 * @param array $options The field's options, matches Symfony\Form options
 	 * @return void
 	 */
-	public function register ($param, $type = 'text', $options = array()) {
+	public function register ($field, $type = 'text', $options = array()) {
 		if (!isset($options['type']))
 			$options['type'] = $type;
 
 		if (!isset($options['value']))
 			$options['value'] = null;
 
-		$this->__params[$param] = $options;
+		$this->__fields[$field] = $options;
 
 		return $this;
 	}
@@ -205,8 +205,8 @@ abstract class MicroModel implements \ArrayAccess, \Iterator {
 	 * @return $this
 	 */
 	public function create () {
-		reset($this->__params);
-		$pk = key($this->__params);
+		reset($this->__fields);
+		$pk = key($this->__fields);
 		$values = $this->getValues(false);
 		$placeholders = array();
 
@@ -224,7 +224,7 @@ abstract class MicroModel implements \ArrayAccess, \Iterator {
 		$stmt = $this->__db->prepare($sql);
 
 		foreach ($values as $k => $v) {
-			$stmt->bindValue($k, $v, $this->__params[$k]['type']);
+			$stmt->bindValue($k, $v, $this->__fields[$k]['type']);
 		}
 
 		$stmt->execute();
@@ -239,8 +239,8 @@ abstract class MicroModel implements \ArrayAccess, \Iterator {
 	 * @return $this
 	 */
 	public function read ($pkValue) {
-		reset($this->__params);
-		$pk = key($this->__params);
+		reset($this->__fields);
+		$pk = key($this->__fields);
 
 		$sql = sprintf(
 			'SELECT * FROM %s WHERE %s = :%s'
@@ -255,7 +255,7 @@ abstract class MicroModel implements \ArrayAccess, \Iterator {
 
 		$results = $stmt->fetch();
 
-		foreach ($this->__params as $k => $v) {
+		foreach ($this->__fields as $k => $v) {
 			$this->$k = $results[$k];
 		}
 
@@ -267,8 +267,8 @@ abstract class MicroModel implements \ArrayAccess, \Iterator {
 	 * @return $this
 	 */
 	public function update () {
-		reset($this->__params);
-		$pk = key($this->__params);
+		reset($this->__fields);
+		$pk = key($this->__fields);
 		$values = $this->getValues(false);
 		$updates = array();
 
@@ -286,7 +286,7 @@ abstract class MicroModel implements \ArrayAccess, \Iterator {
 
 		$stmt = $this->__db->prepare($sql);
 
-		foreach ($this->__params as $k => $v) {
+		foreach ($this->__fields as $k => $v) {
 			$stmt->bindValue($k, $this->__get($k), $v['type']);
 		}
 
@@ -300,8 +300,8 @@ abstract class MicroModel implements \ArrayAccess, \Iterator {
 	 * @return $this
 	 */
 	public function delete () {
-		reset($this->__params);
-		$pk = key($this->__params);
+		reset($this->__fields);
+		$pk = key($this->__fields);
 
 		$this->__db->delete(
 			strtolower(get_class($this))
@@ -312,13 +312,13 @@ abstract class MicroModel implements \ArrayAccess, \Iterator {
 	}
 
 	/**
-	 * Gets a Symfony\Form object based on registered params
+	 * Gets a Symfony\Form object based on registered fields
 	 * @return Silex\Form
 	 */
 	public function getForm () {
 		$builder = $this->__app['form.factory']->createBuilder('form', $this);
 
-		foreach (array_slice($this->__params, 1, null, true) as $k => $v) {
+		foreach (array_slice($this->__fields, 1, null, true) as $k => $v) {
 			if (isset($v['display']) && $v['display'] == false)
 				continue;
 
@@ -345,10 +345,10 @@ abstract class MicroModel implements \ArrayAccess, \Iterator {
 		$validator = $this->__app['validator'];
 
 		foreach ($this->getValues(true) as $k => $v) {
-			if (!isset($this->__params[$k]['constraints']))
+			if (!isset($this->__fields[$k]['constraints']))
 				continue;
 
-			foreach ($this->__params[$k]['constraints'] as $constraint) {
+			foreach ($this->__fields[$k]['constraints'] as $constraint) {
 				$possibleError = $validator->validateValue($v, $constraint);
 
 				if (count($possibleError) != 0) {
@@ -368,9 +368,9 @@ abstract class MicroModel implements \ArrayAccess, \Iterator {
 	 */
 	public function getValues ($withPk = true) {
 		if (!$withPk) {
-			$values = array_slice($this->__params, 1, null, true);
+			$values = array_slice($this->__fields, 1, null, true);
 		} else {
-			$values = $this->__params;
+			$values = $this->__fields;
 		}
 
 		foreach ($values as $k => $v) {
