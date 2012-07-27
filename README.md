@@ -106,11 +106,7 @@ MicroModel adds a few extra options to the array.
 
 ### __construct()
 
-```
-__construct($app[, (mixed) $pkValue = null])
-```
-
-The constructor has one dependency: the Silex\Application object.
+`__construct($app[, (mixed) $pkValue = null])` — the constructor has one dependency: the Silex\Application object.
 You can optionally read a single item immediately by specifying `$pkValue`.
 
 `$pkValue` — the value for the individual item’s primary key.
