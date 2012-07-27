@@ -19,7 +19,7 @@ Here’s a table we’ll use for the rest of the examples.
 
 Install with Composer.
 
-```php
+```js
 {
 	"require": {
 		"thomasjbradley/micromodel": "1.0.*"
@@ -31,15 +31,17 @@ Create a PHP class in your Silex application that extends MicroModel.
 **The class must be named identically to the table.**
 Capitalization doesn’t matter, the class name/table name will be converted to lowercase.
 
-	use Symfony\Component\Validator\Constraints as Assert;
+```php
+use Symfony\Component\Validator\Constraints as Assert;
 
-	class Planets extends MicroModel
+class Planets extends MicroModel
+{
+	public function registerFields ()
 	{
-		public function registerFields ()
-		{
-			// Register all the table's fields
-		}
+		// Register all the table's fields
 	}
+}
+```
 
 Then make a new instance of your model, passing the Silex\Application.
 
