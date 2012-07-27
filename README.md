@@ -3,6 +3,8 @@
 A really basic ORM for working with Silex and Doctrine DBAL;
 supports single tables without relationships.
 
+***
+
 ## Example table
 
 Here’s a table we’ll use for the rest of the examples.
@@ -106,10 +108,10 @@ MicroModel adds a few extra options to the array.
 
 ### __construct( *$app* [, mixed *$pkValue* = *null* ] )
 
-The constructor has one dependency: the Silex\Application object.
-You can optionally read a single item immediately by specifying `$pkValue`.
+Set up the micro model and optionally read a single item immediately by specifying `$pkValue`.
 
-`$pkValue` — the value for the individual item’s primary key.
+- `$app` — the Silex\Application object.
+- `$pkValue` — the value for the individual item’s primary key.
 
 ```php
 <?php
@@ -117,11 +119,12 @@ $planets = new Planets($app, 1);
 echo $planets->name; // Mercury
 ```
 
-### all( [ (string|array) $order = null ] )
+### all( [ string|array *$order* = *null* ] )
 
 Get all the results from the table, optionally sorting them.
+*Will return an array of the model objects.*
 
-`$order` — the field names & direction for the order clause.
+- `$order` — the field names & direction for the order clause.
 
 ```php
 <?php
@@ -133,7 +136,8 @@ $planets->all(array('name ASC', 'orbital_period DESC'));
 
 ### create()
 
-`create()` — save the current object into the database, aka `INSERT`.
+Save the current object, using the property values, into the database, aka `INSERT`.
+After insertion, the primary key field is populated with `lastInsertId`.
 
 ```php
 <?php
@@ -144,11 +148,11 @@ $planets->last_updated = new DateTime();
 $planets->create();
 ```
 
-### read()
+### read( mixed *$pkValue* )
 
-`read((mixed) $pkValue)` — read a single entry from the table.
+Read a single entry from the table, converting all the fields to properties of the object.
 
-`$pkValue` — the value for the individual item’s primary key.
+- `$pkValue` — the value for the individual item’s primary key.
 
 ```php
 <?php
@@ -159,7 +163,8 @@ echo $pluto->name; // Mercury
 
 ### update()
 
-`update()` — update the current object in the table, aka `UPDATE`.
+Update the current object, using the property values, in the table, aka `UPDATE`.
+Uses the field marked as primary key for the `WHERE` clause.
 
 ```php
 <?php
@@ -170,7 +175,8 @@ $planets->update();
 
 ### delete()
 
-`delete()` — delete the current object from the table, aka `DELETE`.
+Delete the current object from the table, aka `DELETE`.
+Uses the field marked as primary key for the `WHERE` clause.
 
 ```php
 <?php
@@ -180,7 +186,7 @@ $planets->delete();
 
 ### getForm()
 
-`getForm()` — return a Symfony\Form object for the object.
+Return a Symfony\Form object for the object.
 
 ```php
 <?php
@@ -193,7 +199,9 @@ $form = $planets->getForm();
 
 ### isValid()
 
-`isValid()` — validates the information in the object against the field constraints.
+Validates the information in the object against the field constraints.
+
+The method will return `true` if the form is valid, and a collection of Symfony\Form error messages if invalid.
 
 ```php
 <?php
@@ -204,7 +212,7 @@ $planets->last_updated = new DateTime();
 $planets->isValid(); // true
 ```
 
-The method will return `true` if the form is valid, and a collection of Symfony\Form error messages if invalid.
+***
 
 ## License
 
