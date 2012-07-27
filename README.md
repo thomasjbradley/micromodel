@@ -109,7 +109,7 @@ MicroModel adds a few extra options to the array.
 
 ## Methods
 
-### ☛ __construct( Silex\Application *$app* [, mixed *$pkValue* = *null* ] )
+### ➤ __construct( Silex\Application *$app* [, mixed *$pkValue* = *null* ] )
 
 Set up the model and optionally read a single item immediately by specifying `$pkValue`.
 
