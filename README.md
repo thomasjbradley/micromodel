@@ -124,11 +124,11 @@ echo $planets->name; // Mercury
 
 ### ☛ register( *$name* [, string *$type* = 'text' [, array *$options* = *array()* ]] )
 
-Register a new field on the model to match a field in the table.
+Register a new field on the model to match a field in the table. *Usually called from within the `registerFields()` method.* [Refer to field registration](#field-registration).
 
 - `$name` — The name of the field, spelled identically to the table’s field name.
-- `$type` — One of the [Symfony\Form](http://symfony.com/doc/current/book/forms.html) field types. They match very well to the Doctrine\DBAL field types.
-- `$options` - Any of the Symfony\Form field options. Refer to [field registration extra options](#field-registration-extra-options) for more options.
+- `$type` — One of the [Symfony\Form](http://symfony.com/doc/current/book/forms.html) field types. They match very well to the [Doctrine\DBAL](http://www.doctrine-project.org/projects/dbal.html) field types.
+- `$options` — Any of the Symfony\Form field options. Refer to [field registration extra options](#field-registration-extra-options) for more options.
 
 **@return** — `$this`
 
