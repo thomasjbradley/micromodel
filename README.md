@@ -108,7 +108,7 @@ MicroModel adds a few extra options to the array.
 
 ### __construct( *$app* [, mixed *$pkValue* = *null* ] )
 
-Set up the micro model and optionally read a single item immediately by specifying `$pkValue`.
+Set up the model and optionally read a single item immediately by specifying `$pkValue`.
 
 - `$app` — the Silex\Application object.
 - `$pkValue` — the value for the individual item’s primary key.
@@ -194,7 +194,7 @@ $planets->delete();
 
 ### getForm()
 
-Return a Symfony\Form object for the object.
+Return a Symfony\Form object for the model.
 
 - `@return` — Symfony\Form
 
