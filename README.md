@@ -10,7 +10,7 @@ Here’s a table we’ll use for the rest of the examples.
 	`planets`
 
 	| id       | name    | orbital_period | last_updated |
-	| (PK, AI) | (text)  | (number)       | (date)       |
+	| (PK, AI) | (text)  | (number)       | (text)       |
 	------------------------------------------------------
 	| 1        | Mercury | 87.97          | 1982-10-28   |
 	| 2        | Venus   | 224.70         | 1980-05-21   |
