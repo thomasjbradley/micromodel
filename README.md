@@ -67,35 +67,40 @@ the options array inherits everything from [Symfony\Form](http://symfony.com/doc
 ```php
 <?php
 
-public function registerFields ()
+use Symfony\Component\Validator\Constraints as Assert;
+
+class Planets extends MicroModel
 {
-	// The primary key MUST always come first
-	$this->register('id', 'integer');
+	public function registerFields ()
+	{
+		// The primary key MUST always come first
+		$this->register('id', 'integer');
 
-	$this->register('name', 'text', array(
-		'constraints' => array(new Assert\NotBlank())
-		, 'set' => function ($val) {
-			return filter_var($val, FILTER_SANITIZE_STRING);
-		}
-	));
+		$this->register('name', 'text', array(
+			'constraints' => array(new Assert\NotBlank())
+			, 'set' => function ($val) {
+				return filter_var($val, FILTER_SANITIZE_STRING);
+			}
+		));
 
-	$this->register('orbital_period', 'number', array(
-		'constraints' => array(new Assert\Number())
-		, 'precision' => 2
-		, 'set' => function ($val) {
-			return filter_var($val, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
-		}
-	));
+		$this->register('orbital_period', 'number', array(
+			'constraints' => array(new Assert\Number())
+			, 'precision' => 2
+			, 'set' => function ($val) {
+				return filter_var($val, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+			}
+		));
 
-	$this->register('last_updated', 'date', array(
-		'constraints' => array(new Assert\NotBlank(), new Assert\Date())
-		, 'format' => 'yyyy-MM-dd'
-		, 'display' => false
-		, 'set' => function ($val) {
-			if (is_object($val)) return $val;
-			return new DateTime($val);
-		}
-	));
+		$this->register('last_updated', 'date', array(
+			'constraints' => array(new Assert\NotBlank(), new Assert\Date())
+			, 'format' => 'yyyy-MM-dd'
+			, 'display' => false
+			, 'set' => function ($val) {
+				if (is_object($val)) return $val;
+				return new DateTime($val);
+			}
+		));
+	}
 }
 ```
 
