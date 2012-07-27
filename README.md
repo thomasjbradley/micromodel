@@ -109,7 +109,7 @@ MicroModel adds a few extra options to the array.
 
 ## Methods
 
-### ⇢ __construct( Silex\Application *$app* [, mixed *$pkValue* = *null* ] )
+### ☛ __construct( Silex\Application *$app* [, mixed *$pkValue* = *null* ] )
 
 Set up the model and optionally read a single item immediately by specifying `$pkValue`.
 
@@ -122,7 +122,7 @@ $planets = new Planets($app, 1);
 echo $planets->name; // Mercury
 ```
 
-### ⚑ all( [ string|array *$order* = *null* ] )
+### ☛ all( [ string|array *$order* = *null* ] )
 
 Get all the results from the table, optionally sorting them.
 *Will return an array of the model objects.*
@@ -155,7 +155,7 @@ $planets->last_updated = new DateTime();
 $planets->create();
 ```
 
-### read( mixed *$pkValue* )
+### ☛ read( mixed *$pkValue* )
 
 Read a single entry from the table, converting all the fields to properties of the object.
 
@@ -170,7 +170,7 @@ $pluto = $planets->read(1);
 echo $pluto->name; // Mercury
 ```
 
-### update()
+### ☛ update()
 
 Update the current object, using the property values, in the table, aka `UPDATE`.
 Uses the field marked as primary key for the `WHERE` clause.
@@ -184,7 +184,7 @@ $planets->last_updated = new DateTime();
 $planets->update();
 ```
 
-### delete()
+### ☛ delete()
 
 Delete the current object from the table, aka `DELETE`.
 Uses the field marked as primary key for the `WHERE` clause.
@@ -197,7 +197,7 @@ $planets = new Planets($app, 3);
 $planets->delete();
 ```
 
-### getForm()
+### ☛ getForm()
 
 Return a Symfony\Form object for the model.
 All constraints and options from the field registeration are used.
@@ -213,7 +213,7 @@ $form = $planets->getForm();
 // $form->createForm();
 ```
 
-### isValid()
+### ☛ isValid()
 
 Validates the information in the object against the field constraints.
 
