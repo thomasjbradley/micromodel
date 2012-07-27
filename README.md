@@ -9,11 +9,12 @@ Here’s a table we’ll use for the rest of the examples.
 
 	`planets`
 
-	| id | name    | orbital_period | last_updated |
-	------------------------------------------------
-	| 1  | Mercury | 87.97          | 1982-10-28   |
-	| 2  | Venus   | 224.70         | 1980-05-21   |
-	| 3  | Earth   | 365.25         | 1981-06-04   |
+	| id       | name    | orbital_period | last_updated |
+	| (PK, AI) | (text)  | (number)       | (date)       |
+	------------------------------------------------------
+	| 1        | Mercury | 87.97          | 1982-10-28   |
+	| 2        | Venus   | 224.70         | 1980-05-21   |
+	| 3        | Earth   | 365.25         | 1981-06-04   |
 
 ## How to use
 
