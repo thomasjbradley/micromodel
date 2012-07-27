@@ -104,10 +104,11 @@ MicroModel adds a few extra options to the array.
 
 ## Methods
 
-- `__construct($app, $pkValue = null)` — the constructor has one dependency: the Silex\Application object.
+
+- `__construct($app[, (mixed) $pkValue = null])` — the constructor has one dependency: the Silex\Application object.
 	You can optionally read a single item immediately by specifying `$pkValue`.
 
-	`$pkValue` (mixed) — the value for the individual item’s primary key.
+	`$pkValue` — the value for the individual item’s primary key.
 
 	```php
 	<?php
@@ -115,9 +116,9 @@ MicroModel adds a few extra options to the array.
 	echo $planets->name; // Mercury
 	```
 
-- `all($order)` — get all the results from the table, optionally sorting them.
+- `all([(string|array) $order = null])` — get all the results from the table, optionally sorting them.
 
-	`$order` (string|array) — the field names & direction for the order clause.
+	`$order` — the field names & direction for the order clause.
 
 	```php
 	<?php
@@ -138,9 +139,9 @@ MicroModel adds a few extra options to the array.
 	$planets->create();
 	```
 
-- `read($pkValue)` — read a single entry from the table.
+- `read((mixed) $pkValue)` — read a single entry from the table.
 
-	$pkValue (mixed) — the value for the individual item’s primary key.
+	$pkValue — the value for the individual item’s primary key.
 
 	```php
 	<?php
