@@ -109,7 +109,7 @@ MicroModel adds a few extra options to the array.
 
 ## Methods
 
-### ☛ __construct( Silex\Application *$app* [, mixed *$pkValue* = *null* ] )
+### ☛ __construct( Silex\Application *$app* [, mixed *$pkValue* = null ] )
 
 Set up the model and optionally read a single item immediately by specifying `$pkValue`.
 
@@ -122,7 +122,7 @@ $planets = new Planets($app, 1);
 echo $planets->name; // Mercury
 ```
 
-### ☛ register( *$name* [, string *$type* = 'text' [, array *$options* = *array()* ]] )
+### ☛ register( *$name* [, string *$type* = 'text' [, array *$options* = array() ]] )
 
 Register a new field on the model to match a field in the table. *Usually called from within the `registerFields()` method.* [Refer to field registration](#field-registration).
 
@@ -132,7 +132,7 @@ Register a new field on the model to match a field in the table. *Usually called
 
 **@return** — `$this`
 
-### ☛ all( [ string|array *$order* = *null* ] )
+### ☛ all( [ string|array *$order* = null ] )
 
 Get all the results from the table, optionally sorting them.
 *Will return an array of the model objects.*
