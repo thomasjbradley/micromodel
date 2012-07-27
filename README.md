@@ -7,7 +7,7 @@ supports single tables without relationships.
 
 ## Example table
 
-Here’s a table we’ll use for the rest of the examples.
+Here’s a table we’ll use for the rest of the code samples.
 
 	`planets`
 
@@ -20,46 +20,49 @@ Here’s a table we’ll use for the rest of the examples.
 
 ## How to use
 
-Install with Composer.
+1. Install with Composer.
 
-```js
-{
-	"require": {
-		"thomasjbradley/micromodel": "1.0.*"
-	}
-}
-```
-
-Create a PHP class in your Silex application that extends MicroModel.
-**The class must be named identically to the table.**
-Capitalization doesn’t matter, the class name/table name will be converted to lowercase.
-
-```php
-<?php
-
-use Symfony\Component\Validator\Constraints as Assert;
-
-class Planets extends MicroModel
-{
-	public function registerFields ()
+	```js
 	{
-		// Register all the table's fields
+		"require": {
+			"thomasjbradley/micromodel": "1.0.*"
+		}
 	}
-}
-```
+	```
 
-Then make a new instance of your model, passing the Silex\Application.
+2. Create a PHP class in your Silex application that extends MicroModel.
+	**The class must be named identically to the table.**
+	Capitalization doesn’t matter, the class name/table name will be converted to lowercase.
 
-```php
-<?php
-$planets = new Planets($app);
-$planetsList = $planets->all();
-```
+	```php
+	<?php
+
+	use Symfony\Component\Validator\Constraints as Assert;
+
+	class Planets extends MicroModel
+	{
+		public function registerFields ()
+		{
+			// Register all the table's fields
+		}
+	}
+	```
+
+3. Then make a new instance of your model, passing the Silex\Application.
+
+	```php
+	<?php
+	$app = new Silex\Application();
+	$planets = new Planets($app);
+	$planetsList = $planets->all();
+	```
 
 ## Field registration
 
 When registering fields,
 the options array inherits everything from [Symfony\Form](http://symfony.com/doc/current/book/forms.html) options arrays.
+
+**Always register the primary key field first.**
 
 ```php
 <?php
@@ -100,7 +103,7 @@ public function registerFields ()
 
 MicroModel adds a few extra options to the array.
 
-- `set` (function) — A function for handling when the data is set.
+- `set` (function) — An optional setter function.
 	Allows for data type conversion and sanitization.
 - `display` (boolean) — Whether the field should be shown in forms or not.
 
@@ -125,7 +128,7 @@ Get all the results from the table, optionally sorting them.
 *Will return an array of the model objects.*
 
 - `$order` — the field names & direction for the order clause.
-- `@return` — an array of objects, each object is an instance of your model.
+- **@return** — an array of objects, each object is an instance of your model.
 
 ```php
 <?php
@@ -140,7 +143,7 @@ $planets->all(array('name ASC', 'orbital_period DESC'));
 Save the current object, using the property values, into the database, aka `INSERT`.
 After insertion, the primary key field is populated with `lastInsertId`.
 
-- `@return` — `$this`
+- **@return** — `$this`
 
 ```php
 <?php
@@ -156,7 +159,7 @@ $planets->create();
 Read a single entry from the table, converting all the fields to properties of the object.
 
 - `$pkValue` — the value for the individual item’s primary key.
-- `@return` — `$this`
+- **@return** — `$this`
 
 ```php
 <?php
@@ -170,7 +173,7 @@ echo $pluto->name; // Mercury
 Update the current object, using the property values, in the table, aka `UPDATE`.
 Uses the field marked as primary key for the `WHERE` clause.
 
-- `@return` — `$this`
+- **@return** — `$this`
 
 ```php
 <?php
@@ -184,7 +187,7 @@ $planets->update();
 Delete the current object from the table, aka `DELETE`.
 Uses the field marked as primary key for the `WHERE` clause.
 
-- `@return` — `$this`
+- **@return** — `$this`
 
 ```php
 <?php
@@ -196,7 +199,7 @@ $planets->delete();
 
 Return a Symfony\Form object for the model.
 
-- `@return` — Symfony\Form
+- **@return** — Symfony\Form
 
 ```php
 <?php
@@ -211,7 +214,7 @@ $form = $planets->getForm();
 
 Validates the information in the object against the field constraints.
 
-- `@return` — `true` if the form is valid, and a collection of Symfony\Form error messages if invalid.
+- **@return** — `true` if the form is valid, and a collection of Symfony\Form error messages if invalid.
 
 ```php
 <?php
