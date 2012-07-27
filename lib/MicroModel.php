@@ -48,7 +48,7 @@ abstract class MicroModel implements \ArrayAccess, \Iterator {
 	 * @return mixed
 	 */
 	public function __get ($field) {
-		return $this->__fields[$field]['value'];
+		return $this->__fields[$field]['data'];
 	}
 
 	/**
@@ -58,9 +58,9 @@ abstract class MicroModel implements \ArrayAccess, \Iterator {
 	 */
 	public function __set ($field, $val) {
 		if (isset($this->__fields[$field]['set'])) {
-			$this->__fields[$field]['value'] = $this->__fields[$field]['set']($val);
+			$this->__fields[$field]['data'] = $this->__fields[$field]['set']($val);
 		} else {
-			$this->__fields[$field]['value'] = $val;
+			$this->__fields[$field]['data'] = $val;
 		}
 	}
 
@@ -71,7 +71,7 @@ abstract class MicroModel implements \ArrayAccess, \Iterator {
 	 * @return void
 	 */
 	public function offsetSet ($offset, $value) {
-		$this->__set($offset, $value);
+		$this->__set($offset, $data);
 	}
 
 	/**
@@ -89,7 +89,7 @@ abstract class MicroModel implements \ArrayAccess, \Iterator {
 	 * @return void
 	 */
 	public function offsetUnset ($offset) {
-		$this->__fields[$offset]['value'] = null;
+		$this->__fields[$offset]['data'] = null;
 	}
 
 	/**
@@ -98,7 +98,7 @@ abstract class MicroModel implements \ArrayAccess, \Iterator {
 	 * @return mixed
 	 */
 	public function offsetGet ($offset) {
-		return $this->__fields[$offset]['value'];
+		return $this->__fields[$offset]['data'];
 	}
 
 	/**
@@ -152,8 +152,8 @@ abstract class MicroModel implements \ArrayAccess, \Iterator {
 		if (!isset($options['type']))
 			$options['type'] = $type;
 
-		if (!isset($options['value']))
-			$options['value'] = null;
+		if (!isset($options['data']))
+			$options['data'] = null;
 
 		$this->__fields[$field] = $options;
 
@@ -324,7 +324,6 @@ abstract class MicroModel implements \ArrayAccess, \Iterator {
 
 			$options = $v;
 			unset($options['type']);
-			unset($options['value']);
 			unset($options['set']);
 			unset($options['display']);
 
