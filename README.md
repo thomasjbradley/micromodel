@@ -25,7 +25,7 @@ Here’s a table we’ll use for the rest of the code samples.
 	```js
 	{
 		"require": {
-			"thomasjbradley/micromodel": "1.0.*"
+			"thomasjbradley/micromodel": "<2.0.0"
 		}
 	}
 	```
