@@ -84,7 +84,6 @@ public function registerFields ()
 
 	$this->register('last_updated', 'date', array(
 		'constraints' => array(new Assert\NotBlank(), new Assert\Date())
-		, 'widget' => 'single_text'
 		, 'format' => 'yyyy-MM-dd'
 		, 'display' => false
 		, 'set' => function ($val) {
