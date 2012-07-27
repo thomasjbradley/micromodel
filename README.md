@@ -104,92 +104,109 @@ MicroModel adds a few extra options to the array.
 
 ## Methods
 
+### __construct()
 
-- `__construct($app[, (mixed) $pkValue = null])` — the constructor has one dependency: the Silex\Application object.
-	You can optionally read a single item immediately by specifying `$pkValue`.
+`__construct($app[, (mixed) $pkValue = null])`
 
-	`$pkValue` — the value for the individual item’s primary key.
+The constructor has one dependency: the Silex\Application object.
+You can optionally read a single item immediately by specifying `$pkValue`.
 
-	```php
-	<?php
-	$planets = new Planets($app, 1);
-	echo $planets->name; // Mercury
-	```
+`$pkValue` — the value for the individual item’s primary key.
 
-- `all([(string|array) $order = null])` — get all the results from the table, optionally sorting them.
+```php
+<?php
+$planets = new Planets($app, 1);
+echo $planets->name; // Mercury
+```
 
-	`$order` — the field names & direction for the order clause.
+### all()
 
-	```php
-	<?php
-	$planets = new Planets($app);
-	$planets->all();
-	$planets->all('name ASC');
-	$planets->all(array('name ASC', 'discovery_date DESC'));
-	```
+`all([(string|array) $order = null])` — get all the results from the table, optionally sorting them.
 
-- `create()` — save the current object into the database, aka `INSERT`.
+`$order` — the field names & direction for the order clause.
 
-	```php
-	<?php
-	$planets = new Planets($app);
-	$planets->name = 'Jupiter';
-	$planets->orbital_period = 4332.59;
-	$planets->last_updated = new DateTime();
-	$planets->create();
-	```
+```php
+<?php
+$planets = new Planets($app);
+$planets->all();
+$planets->all('name ASC');
+$planets->all(array('name ASC', 'discovery_date DESC'));
+```
 
-- `read((mixed) $pkValue)` — read a single entry from the table.
+### create()
 
-	`$pkValue` — the value for the individual item’s primary key.
+`create()` — save the current object into the database, aka `INSERT`.
 
-	```php
-	<?php
-	$planets = new Planets($app);
-	$pluto = $planets->read(1);
-	echo $pluto->name; // Mercury
-	```
+```php
+<?php
+$planets = new Planets($app);
+$planets->name = 'Jupiter';
+$planets->orbital_period = 4332.59;
+$planets->last_updated = new DateTime();
+$planets->create();
+```
 
-- `update()` — update the current object in the table, aka `UPDATE`.
+### read()
 
-	```php
-	<?php
-	$planets = new Planets($app, 2);
-	$planets->last_updated = new DateTime();
-	$planets->update();
-	```
+`read((mixed) $pkValue)` — read a single entry from the table.
 
-- `delete()` — delete the current object from the table, aka `DELETE`.
+`$pkValue` — the value for the individual item’s primary key.
 
-	```php
-	<?php
-	$planets = new Planets($app, 3);
-	$planets->delete();
-	```
+```php
+<?php
+$planets = new Planets($app);
+$pluto = $planets->read(1);
+echo $pluto->name; // Mercury
+```
 
-- `getForm()` — return a Symfony\Form object for the object.
+### update()
 
-	```php
-	<?php
-	$planets = new Planets($app, 1);
-	$form = $planets->getForm();
-	// $form->bindRequest($request);
-	// $form->isValid();
-	// $form->createForm();
-	```
+`update()` — update the current object in the table, aka `UPDATE`.
 
-- `isValid()` — validates the information in the object against the field constraints.
+```php
+<?php
+$planets = new Planets($app, 2);
+$planets->last_updated = new DateTime();
+$planets->update();
+```
 
-	```php
-	<?php
-	$planets = new Planets($app);
-	$planets->name = 'Saturn';
-	$planets->orbital_period = 10759.22;
-	$planets->last_updated = new DateTime();
-	$planets->isValid(); // true
-	```
+### delete()
 
-	The method will return `true` if the form is valid, and a collection of Symfony\Form error messages if invalid.
+`delete()` — delete the current object from the table, aka `DELETE`.
+
+```php
+<?php
+$planets = new Planets($app, 3);
+$planets->delete();
+```
+
+### getForm()
+
+`getForm()` — return a Symfony\Form object for the object.
+
+```php
+<?php
+$planets = new Planets($app, 1);
+$form = $planets->getForm();
+// $form->bindRequest($request);
+// $form->isValid();
+// $form->createForm();
+```
+
+### isValid()
+
+`isValid()` — validates the information in the object against the field constraints.
+
+```php
+<?php
+$planets = new Planets($app);
+$planets->name = 'Saturn';
+$planets->orbital_period = 10759.22;
+$planets->last_updated = new DateTime();
+$planets->isValid(); // true
+```
+
+The method will return `true` if the form is valid, and a collection of Symfony\Form error messages if invalid.
 
 ## License
 
