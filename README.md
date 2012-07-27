@@ -19,11 +19,13 @@ Here’s a table we’ll use for the rest of the examples.
 
 Install with Composer.
 
-	{
-		"require": {
-			"thomasjbradley/micromodel": "1.0.*"
-		}
+```php
+{
+	"require": {
+		"thomasjbradley/micromodel": "1.0.*"
 	}
+}
+```
 
 Create a PHP class in your Silex application that extends MicroModel.
 **The class must be named identically to the table.**
