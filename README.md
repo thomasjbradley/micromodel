@@ -48,6 +48,8 @@ class Planets extends MicroModel
 Then make a new instance of your model, passing the Silex\Application.
 
 ```php
+<?php
+
 $planets = new Planets($app);
 $planetsList = $planets->all();
 ```
@@ -57,37 +59,41 @@ $planetsList = $planets->all();
 When registering fields,
 the options array inherits everything from [Symfony\Form](http://symfony.com/doc/current/book/forms.html) options arrays.
 
-	public function registerFields ()
-	{
-		// The primary key MUST always come first
-		$this->register('id', 'integer');
+```php
+<?php
 
-		$this->register('name', 'text', array(
-			'constraints' => array(new Assert\NotBlank())
-			, 'set' => function ($val) {
-				return filter_var($val, FILTER_SANITIZE_STRING);
-			}
-		));
+public function registerFields ()
+{
+	// The primary key MUST always come first
+	$this->register('id', 'integer');
 
-		$this->register('orbital_period', 'number', array(
-			'constraints' => array(new Assert\Number())
-			, 'precision' => 2
-			, 'set' => function ($val) {
-				return filter_var($val, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
-			}
-		));
+	$this->register('name', 'text', array(
+		'constraints' => array(new Assert\NotBlank())
+		, 'set' => function ($val) {
+			return filter_var($val, FILTER_SANITIZE_STRING);
+		}
+	));
 
-		$this->register('last_updated', 'date', array(
-			'constraints' => array(new Assert\NotBlank(), new Assert\Date())
-			, 'widget' => 'single_text'
-			, 'format' => 'yyyy-MM-dd'
-			, 'display' => false
-			, 'set' => function ($val) {
-				if (is_object($val)) return $val;
-				return new DateTime($val);
-			}
-		));
-	}
+	$this->register('orbital_period', 'number', array(
+		'constraints' => array(new Assert\Number())
+		, 'precision' => 2
+		, 'set' => function ($val) {
+			return filter_var($val, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION);
+		}
+	));
+
+	$this->register('last_updated', 'date', array(
+		'constraints' => array(new Assert\NotBlank(), new Assert\Date())
+		, 'widget' => 'single_text'
+		, 'format' => 'yyyy-MM-dd'
+		, 'display' => false
+		, 'set' => function ($val) {
+			if (is_object($val)) return $val;
+			return new DateTime($val);
+		}
+	));
+}
+```
 
 ### Field registration extra options
 
