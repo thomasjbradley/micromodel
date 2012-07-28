@@ -182,7 +182,7 @@ abstract class MicroModel implements \ArrayAccess, \Iterator, \JsonSerializable 
 	 * @return array Each item mapped to the model class
 	 */
 	public function all ($order = array()) {
-		$sql = sprintf('SELECT * FROM %s', strtolower(get_class($this)));
+		$sql = sprintf('SELECT * FROM %s', $this->getTableName());
 
 		if (!empty($order)) {
 			if (is_string($order))
@@ -225,7 +225,7 @@ abstract class MicroModel implements \ArrayAccess, \Iterator, \JsonSerializable 
 
 		$sql = sprintf(
 			'INSERT INTO %s (%s) VALUES (%s)'
-			, strtolower(get_class($this))
+			, $this->getTableName()
 			, implode(',', array_keys($values))
 			, implode(',', $placeholders)
 		);
@@ -253,7 +253,7 @@ abstract class MicroModel implements \ArrayAccess, \Iterator, \JsonSerializable 
 
 		$sql = sprintf(
 			'SELECT * FROM %s WHERE %s = :%s'
-			, strtolower(get_class($this))
+			, $this->getTableName()
 			, $pk
 			, $pk
 		);
@@ -287,7 +287,7 @@ abstract class MicroModel implements \ArrayAccess, \Iterator, \JsonSerializable 
 
 		$sql = sprintf(
 			'UPDATE %s SET %s WHERE %s = :%s'
-			, strtolower(get_class($this))
+			, $this->getTableName()
 			, implode(',', $updates)
 			, $pk
 			, $pk
@@ -313,7 +313,7 @@ abstract class MicroModel implements \ArrayAccess, \Iterator, \JsonSerializable 
 		$pk = key($this->__fields);
 
 		$this->__db->delete(
-			strtolower(get_class($this))
+			$this->getTableName()
 			, array($pk => $this->__get($pk))
 		);
 
@@ -407,6 +407,15 @@ abstract class MicroModel implements \ArrayAccess, \Iterator, \JsonSerializable 
 		}
 
 		return $data;
+	}
+
+	/**
+	 * Converts the class's name into the table name
+	 * @return string
+	 */
+	protected function getTableName () {
+		$class = explode('\\', get_class($this));
+		return strtolower(end($class));
 	}
 
 	/**
