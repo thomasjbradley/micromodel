@@ -8,7 +8,7 @@
  * @license BSD-3-Clause <https://github.com/thomasjbradley/micromodel/blob/master/BSD-3-CLAUSE-LICENSE.txt>
  */
 
-// Still support PHP\5.3, will be useless in PHP\5.4
+// Still support PHP/5.3, will be useless in PHP\5.4
 if (!interface_exists('JsonSerializable')) {
 	interface JsonSerializable {
 		function jsonSerialize ();
@@ -389,7 +389,7 @@ abstract class MicroModel implements \ArrayAccess, \Iterator, \JsonSerializable 
 
 	/**
 	 * Converts this item to a JSON object
-	 * In PHP\5.3 this method must be called directly before json_encode()
+	 * In PHP/5.3 this method must be called directly before json_encode()
 	 *   json_encode($myModel->jsonSerialize())
 	 * @return array The simplified fields and values
 	 */

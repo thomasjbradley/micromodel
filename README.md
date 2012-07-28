@@ -246,6 +246,43 @@ $planets->last_updated = new DateTime();
 $planets->isValid(); // true
 ```
 
+### ☛ bindJson( string|array *$json* )
+
+Takes a JSON string (or an already decoded array) and binds the values to the model’s properties.
+
+- `$json` — the JSON string, or decoded array, containing some or all of the values for the model’s fields.
+
+**@return** — `$this`
+
+```php
+<?php
+$planets = new Planets($app);
+$planets->bindJson($request->getContent());
+
+if ($planets->isValid())
+	$planets->create();
+```
+
+### ☛ jsonSerialize()
+
+Double duty: returns a simplified version of all the fields’ values in an associative array,
+and in PHP/5.4 it is the JsonSerializer implementation
+
+**@return** — an `array` containing all the fields and their values
+
+```php
+<?php
+$planets = new Planets($app, 2);
+
+// PHP/5.4
+return $app->json($planets);
+
+// PHP/5.3
+return $app->json($planets->jsonSerialize());
+// Because PHP/5.3 doesn't have the JsonSerializer interface
+// Will work equally as well in PHP/5.4
+```
+
 ***
 
 ## License
