@@ -9,6 +9,7 @@
 - Bug fix: the iterator implementation for current was not returning the value
 - Bug fix: determining the table name from the class name did not account for namespaces
 - Bug fix: fields were being set twice because of PDO::FETCH_BOTH
+- Bug fix: choice fields weren't supported
 
 **1.0.1 (Jul. 27, 2012)**
 

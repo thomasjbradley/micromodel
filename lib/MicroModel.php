@@ -248,24 +248,28 @@ abstract class MicroModel implements \ArrayAccess, \Iterator, \JsonSerializable 
 	public function create () {
 		reset($this->__fields);
 		$pk = key($this->__fields);
-		$values = $this->getValues(false);
+		$form = $this->getForm();
 		$placeholders = array();
 
-		foreach ($values as $k => $v) {
-			$placeholders[] = ':' . $k;
+		foreach ($form as $k => $v) {
+			$placeholders[$k] = ':' . $k;
 		}
 
 		$sql = sprintf(
 			'INSERT INTO %s (%s) VALUES (%s)'
 			, $this->getTableName()
-			, implode(',', array_keys($values))
+			, implode(',', array_keys($placeholders))
 			, implode(',', $placeholders)
 		);
 
 		$stmt = $this->__db->prepare($sql);
 
-		foreach ($values as $k => $v) {
-			$stmt->bindValue($k, $v, $this->__fields[$k]['type']);
+		foreach ($form as $k => $v) {
+			if (is_object($v->getData()) && get_class($v->getData()) == 'DateTime') {
+				$stmt->bindValue($k, $v->getData(), $this->__fields[$k]['type']);
+			} else {
+				$stmt->bindValue($k, $v->getData());
+			}
 		}
 
 		$stmt->execute();
@@ -321,10 +325,10 @@ abstract class MicroModel implements \ArrayAccess, \Iterator, \JsonSerializable 
 	public function update () {
 		reset($this->__fields);
 		$pk = key($this->__fields);
-		$values = $this->getValues(false);
+		$form = $this->getForm();
 		$updates = array();
 
-		foreach ($values as $k => $v) {
+		foreach ($form as $k => $v) {
 			$updates[] = sprintf('%s = :%s', $k, $k);
 		}
 
@@ -337,9 +341,14 @@ abstract class MicroModel implements \ArrayAccess, \Iterator, \JsonSerializable 
 		);
 
 		$stmt = $this->__db->prepare($sql);
+		$stmt->bindValue($pk, $this->__get($pk));
 
-		foreach ($this->__fields as $k => $v) {
-			$stmt->bindValue($k, $this->__get($k), $v['type']);
+		foreach ($form as $k => $v) {
+			if (is_object($v->getData()) && get_class($v->getData()) == 'DateTime') {
+				$stmt->bindValue($k, $v->getData(), $this->__fields[$k]['type']);
+			} else {
+				$stmt->bindValue($k, $v->getData());
+			}
 		}
 
 		$stmt->execute();
@@ -454,7 +463,11 @@ abstract class MicroModel implements \ArrayAccess, \Iterator, \JsonSerializable 
 		$form = $this->getForm();
 
 		foreach ($form as $k => $v) {
-			$data[$k] = $v->getViewData();
+			if (is_object($v->getData()) && get_class($v->getData()) == 'DateTime') {
+				$data[$k] = $v->getViewData();
+			} else {
+				$data[$k] = $v->getData();
+			}
 		}
 
 		return $data;
