@@ -365,10 +365,13 @@ abstract class MicroModel implements \ArrayAccess, \Iterator, \JsonSerializable 
 
 	/**
 	 * Gets a Symfony\Form object based on registered fields
+	 * @param boolean $csrf_protection Whether to use CSRF protection or not
 	 * @return Silex\Form
 	 */
-	public function getForm () {
-		$builder = $this->__app['form.factory']->createBuilder('form', $this);
+	public function getForm ($csrf_protection = true) {
+		$builder = $this->__app['form.factory']->createBuilder('form', $this, array(
+			'csrf_protection' => $csrf_protection
+		));
 
 		foreach (array_slice($this->__fields, 1, null, true) as $k => $v) {
 			if (isset($v['display']) && $v['display'] == false)
