@@ -191,11 +191,21 @@ abstract class MicroModel implements \ArrayAccess, \Iterator, \JsonSerializable 
 
 	/**
 	 * Returns all the items from the table for this type
-	 * @param array $order The SQL ORDER BY clause, e.g. name ASC
+	 * @param array $order The ORDER BY clause, e.g. name ASC
+	 * @param array $where An array of arrays comprising the WHERE clause
 	 * @return array Each item mapped to the model class
 	 */
-	public function all ($order = array()) {
+	public function all ($order = null, $where = array()) {
 		$sql = sprintf('SELECT * FROM %s', $this->getTableName());
+		$whereClauses = array();
+
+		if (!empty($where)) {
+			foreach ($where as $clause) {
+				$whereClauses[] = sprintf('%s %s :%s', $clause[0], $clause[1], $clause[0]);
+			}
+
+			$sql .= sprintf(' WHERE %s', implode(' AND ', $whereClauses));
+		}
 
 		if (!empty($order)) {
 			if (is_string($order))
@@ -204,7 +214,16 @@ abstract class MicroModel implements \ArrayAccess, \Iterator, \JsonSerializable 
 			$sql .= sprintf(' ORDER BY %s', implode(',', $order));
 		}
 
-		$results = $this->__db->fetchAll($sql);
+		$stmt = $this->__db->prepare($sql);
+
+		if (!empty($where)) {
+			foreach ($where as $clause) {
+				$stmt->bindValue($clause[0], $clause[2]);
+			}
+		}
+
+		$stmt->execute();
+		$results = $stmt->fetchAll();
 		$items = array();
 
 		// Hack because PDO::FETCH_CLASS doesn't work reliably
