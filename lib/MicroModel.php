@@ -5,10 +5,17 @@
  * @author Thomas J Bradley <hey@thomasjbradley.ca>
  * @link http://github.com/thomasjbradley/micromodel
  * @copyright 2012 Thomas J Bradley
- * @license BSD-3-Clause
+ * @license BSD-3-Clause <https://github.com/thomasjbradley/micromodel/blob/master/BSD-3-CLAUSE-LICENSE.txt>
  */
 
-abstract class MicroModel implements \ArrayAccess, \Iterator {
+// Still support PHP\5.3, will be useless in PHP\5.4
+if (!interface_exists('JsonSerializable')) {
+	interface JsonSerializable {
+		function jsonSerialize ();
+	}
+}
+
+abstract class MicroModel implements \ArrayAccess, \Iterator, \JsonSerializable {
 	/**
 	 * Instance of Silex\Application
 	 * @var Silex\Application
@@ -361,11 +368,51 @@ abstract class MicroModel implements \ArrayAccess, \Iterator {
 	}
 
 	/**
+	 * Takes a JSON object, aka associative array, or string and binds the values to the fields
+	 * @param string|array $json The JSON data for this item
+	 * @return $this
+	 */
+	public function bindJson ($json) {
+		if (is_string($json)) {
+			$json = json_decode($json);
+		}
+
+		foreach ($this->__fields as $k => $v) {
+			if (isset($json->$k))
+				$this->__set($k, $json->$k);
+		}
+
+		return $this;
+	}
+
+	/**
+	 * Converts this item to a JSON object
+	 * In PHP\5.3 this method must be called directly before json_encode()
+	 *   json_encode($myModel->jsonSerialize())
+	 * @return array The simplified fields and values
+	 */
+	public function jsonSerialize () {
+		reset($this->__fields);
+		$pk = key($this->__fields);
+		$data = array(
+			$pk => $this->__get($pk)
+		);
+
+		$form = $this->getForm();
+
+		foreach ($form as $k => $v) {
+			$data[$k] = $v->getViewData();
+		}
+
+		return $data;
+	}
+
+	/**
 	 * Gets all the values for this item and puts them in an array
 	 * @param boolean $withPk Whether the primary key item should be included or not
 	 * @return array
 	 */
-	public function getValues ($withPk = true) {
+	protected function getValues ($withPk = true) {
 		if (!$withPk) {
 			$values = array_slice($this->__fields, 1, null, true);
 		} else {
