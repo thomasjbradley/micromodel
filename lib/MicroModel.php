@@ -479,6 +479,7 @@ abstract class MicroModel implements \ArrayAccess, \Iterator, \JsonSerializable 
 	 */
 	protected function getTableName () {
 		$class = explode('\\', get_class($this));
+
 		return strtolower(end($class));
 	}
 
