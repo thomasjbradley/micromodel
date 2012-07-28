@@ -41,6 +41,19 @@ abstract class MicroModel implements \ArrayAccess, \Iterator, \JsonSerializable 
 	 */
 	public function __construct (\Silex\Application $app, $pkValue = null) {
 		$this->__app = $app;
+
+		if (!isset($app['db']) || get_class($app['db']) != 'Doctrine\DBAL\Connection') {
+			throw new Exception('The Silex application must have the DoctrineServiceProvider registered.');
+		}
+
+		if (!isset($app['validator']) || get_class($app['validator']) != 'Symfony\Component\Validator\Validator') {
+			throw new Exception('The Silex application must have the ValidatorServiceProvider registered.');
+		}
+
+		if (!isset($app['form.factory']) || get_class($app['form.factory']) != 'Symfony\Component\Form\FormFactory') {
+			throw new Exception('The Silex application must have the FormServiceProvider registered.');
+		}
+
 		$this->__db = $this->__app['db'];
 
 		$this->registerFields();

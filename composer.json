@@ -13,9 +13,6 @@
   ]
   , "require": {
     "silex/silex": "1.0.*"
-    , "symfony/form": "2.1.*"
-    , "symfony/validator": "2.1.*"
-    , "doctrine/dbal": "2.2.*"
   }
   , "autoload": {
     "psr-0": {"MicroModel": "lib/"}
