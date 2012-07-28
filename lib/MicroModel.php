@@ -276,35 +276,32 @@ abstract class MicroModel implements \ArrayAccess, \Iterator, \JsonSerializable 
 
 	/**
 	 * Gets a single item from the table
-	 * @param scalar|array $clauses Scalar: the value for the primary key; Array: name/value pairs for the WHERE clause
+	 * @param scalar|array $clauses Scalar: the value for the primary key; Array: arrays comprising the WHERE clause
 	 * @return $this
 	 */
 	public function read ($clauses) {
-		$command = 'SELECT * FROM %s WHERE %s';
-		$where = '%s = :%s';
-		$bind = ' AND ';
 		$whereClauses = array();
 
 		if (!is_array($clauses)) {
 			reset($this->__fields);
 			$pk = key($this->__fields);
-			$clauses = array($pk => $clauses);
+			$clauses = array(array($pk, '=', $clauses));
 		}
 
-		foreach ($clauses as $field => $v) {
-			$whereClauses[] = sprintf($where, $field, $field);
+		foreach ($clauses as $clause) {
+			$whereClauses[] = sprintf('%s %s :%s', $clause[0], $clause[1], $clause[0]);
 		}
 
 		$sql = sprintf(
-			$command
+			'SELECT * FROM %s WHERE %s'
 			, $this->getTableName()
-			, implode($bind, $whereClauses)
+			, implode(' AND ', $whereClauses)
 		);
 
 		$stmt = $this->__db->prepare($sql);
 
-		foreach ($clauses as $field => $v) {
-			$stmt->bindValue($field, $v);
+		foreach ($clauses as $clause) {
+			$stmt->bindValue($clause[0], $clause[2]);
 		}
 
 		$stmt->execute();
