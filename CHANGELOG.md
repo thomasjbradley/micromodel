@@ -3,6 +3,7 @@
 **1.1.0 (Jul. 28, 2012)**
 
 - Added JSON serialization and binding support
+- Added WHERE clause support to `read()` and `all()`
 - Bug fix: the iterator implementation for current was not returning the value
 - Bug fix: determining the table name from the class name did not account for namespaces
 

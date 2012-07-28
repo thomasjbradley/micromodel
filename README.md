@@ -112,12 +112,12 @@ MicroModel adds a few extra options to the array.
 
 ## Methods
 
-### ☛ __construct( Silex\Application *$app* [, mixed *$pkValue* = null ] )
+### ☛ __construct( Silex\Application *$app* [, mixed *$clauses* = null ] )
 
-Set up the model and optionally read a single item immediately by specifying `$pkValue`.
+Set up the model and optionally read a single item immediately by specifying `$clauses`.
 
 - `$app` — the Silex\Application object.
-- `$pkValue` — the value for the individual item’s primary key.
+- `$clauses` — passed directly to `read()`. See `read()` for more details.
 
 ```php
 <?php
@@ -135,25 +135,43 @@ Register a new field on the model to match a field in the table. *Usually called
 
 **@return** — `$this`
 
-### ☛ all( [ string|array *$order* = null ] )
+### ☛ all( [ string|array *$order* = null [, array *$where* = array() ]] )
 
 Get all the results from the table, optionally sorting them.
 *Will return an array of the model objects.*
 
 - `$order` — the field names & direction for the order clause.
+- `$where` — arrays of WHERE clause conditions following this format: `array('field', 'comparison', 'value')`
 
 **@return** — an array of objects, each object is an instance of your model.
 
 ```php
 <?php
 $planets = new Planets($app);
-$planets->all();
-$planets->all('name ASC');
-$planetsList = $planets->all(array('name ASC', 'orbital_period DESC'));
+$planetsList = $planets->all();
 
 foreach ($planetsList as $planet) {
 	echo $planet->name;
 }
+
+// Since each item in the array is your model object, you could do this
+$planetsList[0]->name = 'Neptune';
+$planetsList[0]->update();
+
+// Using the ORDER BY argument
+$planets->all('name ASC');
+$planets->all(array('name ASC', 'orbital_period DESC'));
+
+// Using the WHERE argument
+$planets->all(null, array(
+	array('orbital_period', '>', 200)
+	, array('name', 'LIKE', '%e%')
+));
+
+// Using ORDER BY and WHERE
+$planets->all('name ASC', array(
+	array('orbital_period', '>', 200)
+));
 ```
 
 ### ☛ create()
@@ -173,19 +191,31 @@ $planets->create();
 echo $planets->id; // 4
 ```
 
-### ☛ read( mixed *$pkValue* )
+### ☛ read( mixed *$clauses* )
 
 Read a single entry from the table, converting all the fields to properties of the object.
 
-- `$pkValue` — the value for the individual item’s primary key.
+- `$clauses` — scalar or array
+	- `scalar` — the value for the individual item’s primary key.
+	- `array` - arrays of WHERE clause conditions following this format: `array('field', 'comparison', 'value')`
 
 **@return** — `$this`
 
 ```php
 <?php
 $planets = new Planets($app);
-$pluto = $planets->read(1);
-echo $pluto->name; // Mercury
+
+// Use the primary key to select an item
+// Equates to WHERE id = 1
+$planet = $planets->read(1);
+echo $planet->name; // Mercury
+
+// Set up a WHERE clause with arrays
+// Equates to WHERE name = 'Earth'
+$planet = $planets->read(array(
+	array('name', '=', 'Earth')
+));
+echo $planet->name; // Earth
 ```
 
 ### ☛ update()
