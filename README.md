@@ -1,6 +1,6 @@
 # MicroModel
 
-A really basic ORM for working with Silex and Doctrine DBAL;
+A really basic ORM-like form and table mapper, for working with Silex, Symfony Forms, and Doctrine DBAL;
 supports single tables without relationships.
 
 ***
@@ -266,7 +266,7 @@ if ($planets->isValid())
 ### ☛ jsonSerialize()
 
 Double duty: returns a simplified version of all the fields’ values in an associative array,
-and in PHP/5.4 it is the JsonSerializer implementation
+and in PHP/5.4 it is the JsonSerializer implementation.
 
 **@return** — an `array` containing all the fields and their values
 

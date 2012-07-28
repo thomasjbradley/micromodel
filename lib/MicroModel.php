@@ -1,7 +1,7 @@
 <?php
 /**
- * MicroModel: a really basic ORM for working with Silex and Doctrine DBAL
- * Supports single instance tables with no relationships
+ * MicroModel: A really basic ORM-like form and table mapper, for working with Silex, Symfony\Forms, and Doctrine\DBAL
+ * Supports single tables without relationships
  * @author Thomas J Bradley <hey@thomasjbradley.ca>
  * @link http://github.com/thomasjbradley/micromodel
  * @copyright 2012 Thomas J Bradley

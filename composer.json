@@ -1,8 +1,8 @@
 {
   "name": "thomasjbradley/micromodel"
-  , "description": "MicroModel, a really basic ORM for working with Silex and Doctrine DBAL; supports single tables without relationships."
+  , "description": "MicroModel: a really basic ORM-like form and table mapper, for working with Silex, Symfony Forms, and Doctrine DBAL; supports single tables without relationships."
   , "homepage": "http://github.com/thomasjbradley/micromodel"
-  , "keywords": ["model", "database", "orm", "silex", "doctrine"]
+  , "keywords": ["model", "database", "forms", "orm", "silex", "symfony", "doctrine"]
   , "license": "BSD-3-Clause"
   , "authors": [
     {
