@@ -439,24 +439,6 @@ abstract class MicroModel implements \ArrayAccess, \Iterator, \JsonSerializable 
 	}
 
 	/**
-	 * Takes a JSON object, aka associative array, or string and binds the values to the fields
-	 * @param string|array $json The JSON data for this item
-	 * @return $this
-	 */
-	public function bindJson ($json) {
-		if (is_string($json)) {
-			$json = json_decode($json);
-		}
-
-		foreach ($this->__fields as $k => $v) {
-			if (isset($json->$k))
-				$this->__set($k, $json->$k);
-		}
-
-		return $this;
-	}
-
-	/**
 	 * Converts this item to a JSON object
 	 * In PHP/5.3 this method must be called directly before json_encode()
 	 *   json_encode($myModel->jsonSerialize())
