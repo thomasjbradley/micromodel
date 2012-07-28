@@ -37,9 +37,9 @@ abstract class MicroModel implements \ArrayAccess, \Iterator, \JsonSerializable 
 	/**
 	 * Sets up DB connection; registers table fields; optionally reads single row
 	 * @param Silex\Application $app The Silex application with Doctrine DBAL
-	 * @param mixed $pkValue The value for the primary key item to read an individual row
+	 * @param mixed $clauses Passed directly to read(); {@see MicroModel::read()}
 	 */
-	public function __construct (\Silex\Application $app, $pkValue = null) {
+	public function __construct (\Silex\Application $app, $clauses = null) {
 		$this->__app = $app;
 
 		if (!isset($app['db']) || get_class($app['db']) != 'Doctrine\DBAL\Connection') {
@@ -58,8 +58,8 @@ abstract class MicroModel implements \ArrayAccess, \Iterator, \JsonSerializable 
 
 		$this->registerFields();
 
-		if (!is_null($pkValue))
-			$this->read($pkValue);
+		if (!is_null($clauses))
+			$this->read($clauses);
 	}
 
 	/**
@@ -257,24 +257,38 @@ abstract class MicroModel implements \ArrayAccess, \Iterator, \JsonSerializable 
 
 	/**
 	 * Gets a single item from the table
-	 * @param mixed $pkValue The value for the primary key of this table
+	 * @param scalar|array $clauses Scalar: the value for the primary key; Array: name/value pairs for the WHERE clause
 	 * @return $this
 	 */
-	public function read ($pkValue) {
-		reset($this->__fields);
-		$pk = key($this->__fields);
+	public function read ($clauses) {
+		$command = 'SELECT * FROM %s WHERE %s';
+		$where = '%s = :%s';
+		$bind = ' AND ';
+		$whereClauses = array();
+
+		if (!is_array($clauses)) {
+			reset($this->__fields);
+			$pk = key($this->__fields);
+			$clauses = array($pk => $clauses);
+		}
+
+		foreach ($clauses as $field => $v) {
+			$whereClauses[] = sprintf($where, $field, $field);
+		}
 
 		$sql = sprintf(
-			'SELECT * FROM %s WHERE %s = :%s'
+			$command
 			, $this->getTableName()
-			, $pk
-			, $pk
+			, implode($bind, $whereClauses)
 		);
 
 		$stmt = $this->__db->prepare($sql);
-		$stmt->bindValue($pk, $pkValue);
-		$stmt->execute();
 
+		foreach ($clauses as $field => $v) {
+			$stmt->bindValue($field, $v);
+		}
+
+		$stmt->execute();
 		$results = $stmt->fetch();
 
 		foreach ($this->__fields as $k => $v) {
