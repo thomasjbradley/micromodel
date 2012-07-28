@@ -223,7 +223,7 @@ abstract class MicroModel implements \ArrayAccess, \Iterator, \JsonSerializable 
 		}
 
 		$stmt->execute();
-		$results = $stmt->fetchAll();
+		$results = $stmt->fetchAll(PDO::FETCH_ASSOC);
 		$items = array();
 
 		// Hack because PDO::FETCH_CLASS doesn't work reliably
@@ -232,7 +232,7 @@ abstract class MicroModel implements \ArrayAccess, \Iterator, \JsonSerializable 
 			$obj = new $class($this->__app);
 
 			foreach ($item as $k => $v) {
-				$obj->$k = $v;
+				$obj->__set($k, $v);
 			}
 
 			$items[] = $obj;
@@ -305,7 +305,7 @@ abstract class MicroModel implements \ArrayAccess, \Iterator, \JsonSerializable 
 		}
 
 		$stmt->execute();
-		$results = $stmt->fetch();
+		$results = $stmt->fetch(PDO::FETCH_ASSOC);
 
 		foreach ($this->__fields as $k => $v) {
 			$this->$k = $results[$k];
