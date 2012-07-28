@@ -137,11 +137,12 @@ Register a new field on the model to match a field in the table. *Usually called
 
 ### ☛ all( [ string|array *$order* = null [, array *$where* = array() ]] )
 
-Get all the results from the table, optionally sorting them.
+Get a bunch of results from the table, optionally sorting them.
+Without any arguments `all()` will return every entry in the database.
 *Will return an array of the model objects.*
 
 - `$order` — the field names & direction for the order clause.
-- `$where` — arrays of WHERE clause conditions, following this format: `array('field', 'comparison', 'value')`
+- `$where` — arrays of WHERE clause conditions, following this format: `array('field', 'comparison', 'value')`.
 
 **@return** — an array of objects, each object is an instance of your model.
 
@@ -158,17 +159,17 @@ foreach ($planetsList as $planet) {
 $planetsList[0]->name = 'Neptune';
 $planetsList[0]->update();
 
-// Using the ORDER BY argument
+// Using the $order argument
 $planets->all('name ASC');
 $planets->all(array('name ASC', 'orbital_period DESC'));
 
-// Using the WHERE argument
+// Using the $where argument
 $planets->all(null, array(
 	array('orbital_period', '>', 200)
 	, array('name', 'LIKE', '%e%')
 ));
 
-// Using ORDER BY and WHERE
+// Using $order and $where
 $planets->all('name ASC', array(
 	array('orbital_period', '>', 200)
 ));
@@ -176,8 +177,9 @@ $planets->all('name ASC', array(
 
 ### ☛ create()
 
-Save the current object, using the property values, into the database, aka `INSERT`.
+Save the current object into the table, using the property values; aka `INSERT`.
 After insertion, the primary key field is populated with `lastInsertId`.
+**The data is not validated before creation is attempted.**
 
 **@return** — `$this`
 
@@ -197,7 +199,7 @@ Read a single entry from the table, converting all the fields to properties of t
 
 - `$clauses` — conditions for reading a single entry in the table.
 	- `scalar` — the value for the individual item’s primary key.
-	- `array` — arrays of WHERE clause conditions, following this format: `array('field', 'comparison', 'value')`
+	- `array` — arrays of WHERE clause conditions, following this format: `array('field', 'comparison', 'value')`.
 
 **@return** — `$this`
 
@@ -220,8 +222,9 @@ echo $planet->name; // Earth
 
 ### ☛ update()
 
-Update the current object, using the property values, in the table, aka `UPDATE`.
+Update the current object in the table, using the property values; aka `UPDATE`.
 Uses the field marked as primary key for the `WHERE` clause.
+**The data is not validated before updating is attempted.**
 
 **@return** — `$this`
 
@@ -234,7 +237,7 @@ $planets->update();
 
 ### ☛ delete()
 
-Delete the current object from the table, aka `DELETE`.
+Delete the current object from the table; aka `DELETE`.
 Uses the field marked as primary key for the `WHERE` clause.
 
 **@return** — `$this`
@@ -311,7 +314,7 @@ $planets->isValid(); // true
 ### ☛ getErrors()
 
 Return an array of all the validation error messages produced by Symfony\Form.
-If there are now error messages the array is empty.
+If there are no error messages the array is empty.
 
 **@return** — `array`
 
