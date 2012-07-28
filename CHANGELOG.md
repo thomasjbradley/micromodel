@@ -4,7 +4,7 @@
 
 - Added JSON serialization of the model
 - Added WHERE clause support to `read()` and `all()`
-- Changed the `isValid()` method to return only true/false. Added `getValidationErrors()` method.
+- Changed the `isValid()` method to return only true/false. Added `getErrors()` method
 - Added CSRF protection flag to the `getForm()` method
 - Bug fix: the iterator implementation for current was not returning the value
 - Bug fix: determining the table name from the class name did not account for namespaces

@@ -308,7 +308,7 @@ $planets->last_updated = new DateTime();
 $planets->isValid(); // true
 ```
 
-### ☛ getValidationErrors()
+### ☛ getErrors()
 
 Return an array of all the validation error messages produced by Symfony\Form.
 If there are now error messages the array is empty.

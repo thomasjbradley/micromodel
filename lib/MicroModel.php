@@ -417,7 +417,7 @@ abstract class MicroModel implements \ArrayAccess, \Iterator, \JsonSerializable 
 	 * Returns a list of all the validation error messages
 	 * @return array Error list if invalid; empty array otherwise
 	 */
-	public function getValidationErrors () {
+	public function getErrors () {
 		$errors = array();
 		$validator = $this->__app['validator'];
 
