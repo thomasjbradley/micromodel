@@ -389,9 +389,32 @@ abstract class MicroModel implements \ArrayAccess, \Iterator, \JsonSerializable 
 
 	/**
 	 * Confirms that the current model object is valid or not
-	 * @return boolean|array True if valid; Error list if invalid
+	 * @return boolean
 	 */
 	public function isValid () {
+		$validator = $this->__app['validator'];
+
+		foreach ($this->getValues(true) as $k => $v) {
+			if (!isset($this->__fields[$k]['constraints']))
+				continue;
+
+			foreach ($this->__fields[$k]['constraints'] as $constraint) {
+				$possibleError = $validator->validateValue($v, $constraint);
+
+				if (count($possibleError) != 0) {
+					return false;
+				}
+			}
+		}
+
+		return true;
+	}
+
+	/**
+	 * Returns a list of all the validation error messages
+	 * @return array Error list if invalid; empty array otherwise
+	 */
+	public function getValidationErrors () {
 		$errors = array();
 		$validator = $this->__app['validator'];
 
@@ -409,7 +432,7 @@ abstract class MicroModel implements \ArrayAccess, \Iterator, \JsonSerializable 
 			}
 		}
 
-		return (empty($errors)) ? true : $errors;
+		return $errors;
 	}
 
 	/**
