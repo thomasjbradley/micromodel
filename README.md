@@ -245,10 +245,12 @@ $planets = new Planets($app, 3);
 $planets->delete();
 ```
 
-### ☛ getForm()
+### ☛ getForm( [ boolean *$csrf_protection* = true ] )
 
 Returns a [Symfony\Form](http://symfony.com/doc/current/book/forms.html) object for the model.
 All constraints and options from the field registration are used.
+
+- `$csrf_protection` — flag for enabling/disabling CSRF proection; helpful primarily for APIs
 
 **@return** — Symfony\Form
 
@@ -259,23 +261,16 @@ $form = $planets->getForm();
 // $form->bindRequest($request);
 // $form->isValid();
 // $form->createForm();
-```
 
-### ☛ bindJson( string|array *$json* )
+// When writing a JSON API
+$form = $planets->getForm(false);
+// Symfony's form bind() method expects an array, so force json_decode to use associative arrays
+$form->bind(json_decode($request->getContent(), true));
 
-Takes a JSON string (or an already decoded array) and binds the values to the model’s properties.
-
-- `$json` — the JSON string, or decoded array, containing some or all of the values for the model’s fields.
-
-**@return** — `$this`
-
-```php
-<?php
-$planets = new Planets($app);
-$planets->bindJson($request->getContent());
-
-if ($planets->isValid())
-	$planets->create();
+if ($form->isValid()) {
+	$movie->create();
+	$app->abort(204);
+}
 ```
 
 ### ☛ jsonSerialize()

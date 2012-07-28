@@ -2,11 +2,13 @@
 
 **1.1.0 (Jul. 28, 2012)**
 
-- Added JSON serialization and binding support
+- Added JSON serialization of the model
 - Added WHERE clause support to `read()` and `all()`
 - Changed the `isValid()` method to return only true/false. Added `getValidationErrors()` method.
+- Added CSRF protection flag to the `getForm()` method
 - Bug fix: the iterator implementation for current was not returning the value
 - Bug fix: determining the table name from the class name did not account for namespaces
+- Bug fix: fields were being set twice because of PDO::FETCH_BOTH
 
 **1.0.1 (Jul. 27, 2012)**
 
