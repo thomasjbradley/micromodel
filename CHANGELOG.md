@@ -4,6 +4,7 @@
 
 - Added JSON serialization and binding support
 - Added WHERE clause support to `read()` and `all()`
+- Changed the `isValid()` method to return only true/false. Added `getValidationErrors()` method.
 - Bug fix: the iterator implementation for current was not returning the value
 - Bug fix: determining the table name from the class name did not account for namespaces
 

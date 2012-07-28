@@ -261,21 +261,6 @@ $form = $planets->getForm();
 // $form->createForm();
 ```
 
-### ☛ isValid()
-
-Validates the information in the object against the field constraints.
-
-**@return** — `true` if the form is valid; a collection of Symfony\Form error messages if invalid.
-
-```php
-<?php
-$planets = new Planets($app);
-$planets->name = 'Saturn';
-$planets->orbital_period = 10759.22;
-$planets->last_updated = new DateTime();
-$planets->isValid(); // true
-```
-
 ### ☛ bindJson( string|array *$json* )
 
 Takes a JSON string (or an already decoded array) and binds the values to the model’s properties.
@@ -312,6 +297,28 @@ return $app->json($planets->jsonSerialize());
 // Because PHP/5.3 doesn't have the JsonSerializer interface
 // Will work equally as well in PHP/5.4
 ```
+
+### ☛ isValid()
+
+Validates the information in the object against the field constraints.
+
+**@return** — `boolean`
+
+```php
+<?php
+$planets = new Planets($app);
+$planets->name = 'Saturn';
+$planets->orbital_period = 10759.22;
+$planets->last_updated = new DateTime();
+$planets->isValid(); // true
+```
+
+### ☛ getValidationErrors()
+
+Return an array of all the validation error messages produced by Symfony\Form.
+If there are now error messages the array is empty.
+
+**@return** — `array`
 
 ***
 
