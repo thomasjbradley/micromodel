@@ -121,7 +121,9 @@ abstract class MicroModel implements \ArrayAccess, \Iterator, \JsonSerializable 
 	 * @return array All the field's details
 	 */
 	public function current () {
-		return current($this->__fields);
+		$opts = current($this->__fields);
+
+		return $opts['data'];
 	}
 
 	/**
