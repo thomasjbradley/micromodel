@@ -141,7 +141,7 @@ Get all the results from the table, optionally sorting them.
 *Will return an array of the model objects.*
 
 - `$order` — the field names & direction for the order clause.
-- `$where` — arrays of WHERE clause conditions following this format: `array('field', 'comparison', 'value')`
+- `$where` — arrays of WHERE clause conditions, following this format: `array('field', 'comparison', 'value')`
 
 **@return** — an array of objects, each object is an instance of your model.
 
@@ -195,9 +195,9 @@ echo $planets->id; // 4
 
 Read a single entry from the table, converting all the fields to properties of the object.
 
-- `$clauses` — scalar or array
+- `$clauses` — conditions for reading a single entry in the table.
 	- `scalar` — the value for the individual item’s primary key.
-	- `array` - arrays of WHERE clause conditions following this format: `array('field', 'comparison', 'value')`
+	- `array` — arrays of WHERE clause conditions, following this format: `array('field', 'comparison', 'value')`
 
 **@return** — `$this`
 
@@ -248,7 +248,7 @@ $planets->delete();
 ### ☛ getForm()
 
 Returns a [Symfony\Form](http://symfony.com/doc/current/book/forms.html) object for the model.
-All constraints and options from the field registeration are used.
+All constraints and options from the field registration are used.
 
 **@return** — Symfony\Form
 
