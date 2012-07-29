@@ -198,7 +198,7 @@ echo $planets->id; // 4
 Read a single entry from the table, converting all the fields to properties of the object.
 
 - `$clauses` — conditions for reading a single entry in the table.
-	- `scalar` — the value for the individual item’s primary key.
+	- `int|string` — the value for the individual item’s primary key.
 	- `array` — arrays of WHERE clause conditions, following this format: `array('field', 'comparison', 'value')`.
 
 **@return** — `$this`

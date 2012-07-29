@@ -280,7 +280,7 @@ abstract class MicroModel implements \ArrayAccess, \Iterator, \JsonSerializable 
 
 	/**
 	 * Gets a single item from the table
-	 * @param scalar|array $clauses Scalar: the value for the primary key; Array: arrays comprising the WHERE clause
+	 * @param int|string|array $clauses Int|String: the value for the primary key; Array: arrays comprising the WHERE clause
 	 * @return $this
 	 */
 	public function read ($clauses) {
