@@ -1,5 +1,9 @@
 # Changelog
 
+**1.1.1 (Jul. 30, 2012)**
+
+- Renamed a few methods to make MicroModel be more consistent with Mongoose
+
 **1.1.0 (Jul. 28, 2012)**
 
 - Added JSON serialization of the model

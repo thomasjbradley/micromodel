@@ -39,9 +39,9 @@ Here’s a table we’ll use for the rest of the code samples.
 
 	class Planets extends MicroModel
 	{
-		public function registerFields ()
+		public function defineSchema ()
 		{
-			// Register all the table's fields
+			// Define all the table's fields
 		}
 	}
 	```
@@ -55,12 +55,12 @@ Here’s a table we’ll use for the rest of the code samples.
 	$planetsList = $planets->all();
 	```
 
-## Field registration
+## Defining fields
 
-When registering fields,
+When defining fields,
 the options array inherits everything from [Symfony\Form](http://symfony.com/doc/current/book/forms.html) options arrays.
 
-**Always register the primary key field first.**
+**Always define the primary key field first.**
 
 ```php
 <?php
@@ -69,19 +69,19 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 class Planets extends MicroModel
 {
-	public function registerFields ()
+	public function defineSchema ()
 	{
 		// The primary key MUST always come first
-		$this->register('id', 'integer');
+		$this->defineField('id', 'integer');
 
-		$this->register('name', 'text', array(
+		$this->defineField('name', 'text', array(
 			'constraints' => array(new Assert\NotBlank())
 			, 'set' => function ($val) {
 				return filter_var($val, FILTER_SANITIZE_STRING);
 			}
 		));
 
-		$this->register('orbital_period', 'number', array(
+		$this->defineField('orbital_period', 'number', array(
 			'constraints' => array(new Assert\Number())
 			, 'precision' => 2
 			, 'set' => function ($val) {
@@ -89,7 +89,7 @@ class Planets extends MicroModel
 			}
 		));
 
-		$this->register('last_updated', 'date', array(
+		$this->defineField('last_updated', 'date', array(
 			'constraints' => array(new Assert\NotBlank(), new Assert\Date())
 			, 'format' => 'yyyy-MM-dd'
 			, 'display' => false
@@ -102,7 +102,7 @@ class Planets extends MicroModel
 }
 ```
 
-### Field registration extra options
+### Field definition extra options
 
 MicroModel adds a few extra options to the array.
 
@@ -125,9 +125,9 @@ $planets = new Planets($app, 1);
 echo $planets->name; // Mercury
 ```
 
-### ☛ register( *$name* [, string *$type* = 'text' [, array *$options* = array() ]] )
+### ☛ defineField( *$name* [, string *$type* = 'text' [, array *$options* = array() ]] )
 
-Register a new field on the model to match a field in the table. *Usually called from within the `registerFields()` method.* [Refer to field registration](#field-registration).
+Define a new field on the model to match a field in the table. *Usually called from within the `defineSchema()` method.* [Refer to defining fields](#defining-fields).
 
 - `$name` — The name of the field, spelled identically to the table’s field name.
 - `$type` — One of the [Symfony\Form](http://symfony.com/doc/current/book/forms.html) field types. They match very well to the [Doctrine\DBAL](http://www.doctrine-project.org/projects/dbal.html) field types.
@@ -135,10 +135,10 @@ Register a new field on the model to match a field in the table. *Usually called
 
 **@return** — `$this`
 
-### ☛ all( [ string|array *$order* = null [, array *$where* = array() ]] )
+### ☛ find( [ string|array *$order* = null [, array *$where* = array() ]] )
 
 Get a bunch of results from the table, optionally sorting them.
-Without any arguments `all()` will return every entry in the database.
+Without any arguments `find()` will return every entry in the database.
 *Will return an array of the model objects.*
 
 - `$order` — the field names & direction for the order clause.
@@ -149,7 +149,7 @@ Without any arguments `all()` will return every entry in the database.
 ```php
 <?php
 $planets = new Planets($app);
-$planetsList = $planets->all();
+$planetsList = $planets->find();
 
 foreach ($planetsList as $planet) {
 	echo $planet->name;
@@ -160,17 +160,17 @@ $planetsList[0]->name = 'Neptune';
 $planetsList[0]->update();
 
 // Using the $order argument
-$planets->all('name ASC');
-$planets->all(array('name ASC', 'orbital_period DESC'));
+$planets->find('name ASC');
+$planets->find(array('name ASC', 'orbital_period DESC'));
 
 // Using the $where argument
-$planets->all(null, array(
+$planets->find(null, array(
 	array('orbital_period', '>', 200)
 	, array('name', 'LIKE', '%e%')
 ));
 
 // Using $order and $where
-$planets->all('name ASC', array(
+$planets->find('name ASC', array(
 	array('orbital_period', '>', 200)
 ));
 ```
