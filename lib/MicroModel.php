@@ -196,7 +196,12 @@ abstract class MicroModel implements \ArrayAccess, \Iterator, \JsonSerializable 
    * @todo Make abstract method in 2.0.0
    * @return void
    */
-  public function defineSchema () {}
+  public function defineSchema () {
+    throw new Exception(sprintf(
+      'The defineSchema() method is missing in your %s MicroModel.'
+      , get_class($this)
+    ));
+  }
 
   /**
    * Returns all, or some, of the items from the table for this type
