@@ -1,5 +1,9 @@
 # Changelog
 
+**1.1.2 (Jul. 31, 2012)**
+
+- Added an exception in defineSchema() in case the method is not recreated in the model
+
 **1.1.1 (Jul. 30, 2012)**
 
 - Renamed a few methods to make MicroModel be more consistent with Mongoose
