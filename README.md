@@ -177,7 +177,7 @@ $planets->find('name ASC', array(
 
 ### ☛ create()
 
-Save the current object into the table, using the property values; aka `INSERT`.
+`INSERT` the current object into the table using the property values.
 After insertion, the primary key field is populated with `lastInsertId`.
 **The data is not validated before creation is attempted.**
 
@@ -222,7 +222,7 @@ echo $planet->name; // Earth
 
 ### ☛ update()
 
-Update the current object in the table, using the property values; aka `UPDATE`.
+`UPDATE` the current object in the table using the property values.
 Uses the field marked as primary key for the `WHERE` clause.
 **The data is not validated before updating is attempted.**
 
@@ -237,7 +237,7 @@ $planets->update();
 
 ### ☛ delete()
 
-Delete the current object from the table; aka `DELETE`.
+`DELETE` the current object from the table.
 Uses the field marked as primary key for the `WHERE` clause.
 
 **@return** — `$this`
@@ -263,7 +263,7 @@ $planets = new Planets($app, 1);
 $form = $planets->getForm();
 // $form->bindRequest($request);
 // $form->isValid();
-// $form->createForm();
+// $form->createView();
 
 // When writing a JSON API
 $form = $planets->getForm(false);
@@ -314,6 +314,7 @@ $planets->isValid(); // true
 ### ☛ getErrors()
 
 Return an array of all the validation error messages produced by Symfony\Form.
+Generally called after `isValid()` if you need to see the error messages.
 If there are no error messages the array is empty.
 
 **@return** — `array`
