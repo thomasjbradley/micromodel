@@ -39,8 +39,8 @@ abstract class MicroModel implements \ArrayAccess, \Iterator, \JsonSerializable 
    * @param Silex\Application $app The Silex application with Doctrine DBAL
    * @param mixed $clauses Passed directly to read(); {@see MicroModel::read()}
    * @throws Exception
-  */
-	public function __construct (\Silex\Application $app, $clauses = null) {
+   */
+  public function __construct (\Silex\Application $app, $clauses = null) {
     $this->__app = $app;
 
     if (!isset($app['db']) || get_class($app['db']) != 'Doctrine\DBAL\Connection') {

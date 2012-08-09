@@ -1,5 +1,9 @@
 # Changelog
 
+**1.1.3 (Aug. 9, 2012)**
+
+- Fixed typo in offsetGet, contributed by @tyaga
+
 **1.1.2 (Jul. 31, 2012)**
 
 - Added an exception in defineSchema() in case the method is not recreated in the model
