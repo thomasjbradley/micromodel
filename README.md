@@ -261,7 +261,7 @@ All constraints and options from the field registration are used.
 <?php
 $planets = new Planets($app, 1);
 $form = $planets->getForm();
-// $form->bindRequest($request);
+// $form->bind($request);
 // $form->isValid();
 // $form->createView();
 
