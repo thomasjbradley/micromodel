@@ -38,8 +38,9 @@ abstract class MicroModel implements \ArrayAccess, \Iterator, \JsonSerializable 
    * Sets up DB connection; registers table fields; optionally reads single row
    * @param Silex\Application $app The Silex application with Doctrine DBAL
    * @param mixed $clauses Passed directly to read(); {@see MicroModel::read()}
-   */
-  public function __construct (\Silex\Application $app, $clauses = null) {
+   * @throws Exception
+  */
+	public function __construct (\Silex\Application $app, $clauses = null) {
     $this->__app = $app;
 
     if (!isset($app['db']) || get_class($app['db']) != 'Doctrine\DBAL\Connection') {
@@ -99,7 +100,7 @@ abstract class MicroModel implements \ArrayAccess, \Iterator, \JsonSerializable 
    * @return void
    */
   public function offsetSet ($offset, $value) {
-    $this->__set($offset, $data);
+    $this->__set($offset, $value);
   }
 
   /**
@@ -176,7 +177,7 @@ abstract class MicroModel implements \ArrayAccess, \Iterator, \JsonSerializable 
    * @param string $field The field's name
    * @param string $type The field's type, matches Symfony\Form types
    * @param array $options The field's options, matches Symfony\Form options
-   * @return void
+   * @return $this
    */
   public function defineField ($field, $type = 'text', $options = array()) {
     if (!isset($options['type']))
@@ -195,6 +196,7 @@ abstract class MicroModel implements \ArrayAccess, \Iterator, \JsonSerializable 
    * Used to register all the table field types
    * @todo Make abstract method in 2.0.0
    * @return void
+   * @throws Exception
    */
   public function defineSchema () {
     throw new Exception(sprintf(
@@ -389,7 +391,7 @@ abstract class MicroModel implements \ArrayAccess, \Iterator, \JsonSerializable 
   /**
    * Gets a Symfony\Form object based on registered fields
    * @param boolean $csrf_protection Whether to use CSRF protection or not
-   * @return Silex\Form
+   * @return Symfony\Component\Form\Form
    */
   public function getForm ($csrf_protection = true) {
     $builder = $this->__app['form.factory']->createBuilder('form', $this, array(
