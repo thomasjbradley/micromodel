@@ -248,12 +248,12 @@ $planets = new Planets($app, 3);
 $planets->delete();
 ```
 
-### ☛ getForm( [ boolean *$csrf_protection* = true ] )
+### ☛ getForm( [ boolean *$csrfProtection* = true ] )
 
 Returns a [Symfony\Form](http://symfony.com/doc/current/book/forms.html) object for the model.
 All constraints and options from the field registration are used.
 
-- `$csrf_protection` — flag for enabling/disabling CSRF proection; helpful primarily for APIs
+- `$csrfProtection` — flag for enabling/disabling CSRF proection; helpful primarily for APIs
 
 **@return** — Symfony\Form
 

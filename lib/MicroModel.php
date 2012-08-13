@@ -195,8 +195,8 @@ abstract class MicroModel implements \ArrayAccess, \Iterator, \JsonSerializable 
    * Abstract function that must be implemented by the model
    * Used to register all the table field types
    * @todo Make abstract method in 2.0.0
-   * @return void
    * @throws Exception
+   * @return void
    */
   public function defineSchema () {
     throw new Exception(sprintf(
@@ -390,12 +390,12 @@ abstract class MicroModel implements \ArrayAccess, \Iterator, \JsonSerializable 
 
   /**
    * Gets a Symfony\Form object based on registered fields
-   * @param boolean $csrf_protection Whether to use CSRF protection or not
+   * @param boolean $csrfProtection Whether to use CSRF protection or not
    * @return Symfony\Component\Form\Form
    */
-  public function getForm ($csrf_protection = true) {
+  public function getForm ($csrfProtection = true) {
     $builder = $this->__app['form.factory']->createBuilder('form', $this, array(
-      'csrf_protection' => $csrf_protection
+      'csrf_protection' => $csrfProtection
     ));
 
     foreach (array_slice($this->__fields, 1, null, true) as $k => $v) {
@@ -429,9 +429,8 @@ abstract class MicroModel implements \ArrayAccess, \Iterator, \JsonSerializable 
       foreach ($this->__fields[$k]['constraints'] as $constraint) {
         $possibleError = $validator->validateValue($v, $constraint);
 
-        if (count($possibleError) != 0) {
+        if (count($possibleError) != 0)
           return false;
-        }
       }
     }
 
